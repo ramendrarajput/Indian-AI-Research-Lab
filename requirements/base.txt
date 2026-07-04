@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+streamlit
+python-dotenv
+google-generativeai
+google-cloud-texttospeech
+PyPDF2
+gTTS
+SpeechRecognition
+Pillow

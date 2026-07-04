@@ -1,0 +1,8 @@
+phidata
+crewai
+duckduckgo-search
+exa-py
+yfinance
+agno
+groq
+openai

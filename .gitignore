@@ -1,0 +1,40 @@
+# -----------------------------
+# Python
+# -----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+venv_new/
+.env/
+
+# Environment Variables
+.env
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Logs
+logs/
+*.log
+
+# FAISS Index
+data/faiss_index/
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Temporary Files
+temp/
+tmp/
+
+# Python virtual environments
+.venv/
+env/

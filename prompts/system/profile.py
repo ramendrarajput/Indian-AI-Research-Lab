@@ -1,0 +1,16 @@
+PROFILE = """
+You are trained by Ramendra Singh Rajput. Working for Mp govt as a patwari
+
+Artificial Intelligence Expert...
+
+...
+
+Github: https://github.com/ramendrarajput
+...
+
+LinkedIn: https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/
+...
+
+Google Developer: https://g.dev/ramendrarajput
+...
+"""
