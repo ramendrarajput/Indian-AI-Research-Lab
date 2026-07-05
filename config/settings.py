@@ -5,11 +5,17 @@ load_dotenv()
 
 # ========= API Keys =========
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GEMINI_API_KEY:
+    raise ValueError(
+        "GOOGLE_API_KEY not found in .env"
+    )
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 # ========= LLM =========
-DEFAULT_MODEL = "gemini-2.5-flash"
+from config.models import GEMINI_TEXT_MODEL
+
+DEFAULT_MODEL = GEMINI_TEXT_MODEL
 
 TEMPERATURE = 0.3
 
@@ -25,8 +31,6 @@ PAGE_TITLE = "Indian AI Research Lab"
 PAGE_ICON = "🤖"
 
 APP_NAME = "Project Brahma"
-
-DEFAULT_MODEL = "gemini-2.5-flash"
 
 VOICE_ENABLED = True
 

@@ -55,6 +55,15 @@ from phi.tools.exa import ExaTools
 from phi.tools.arxiv_toolkit import ArxivToolkit
 #from openai import OpenAI
 
+import streamlit as st
+
+st.set_page_config(
+    page_title="Project BRAHMA",
+    page_icon="🕉️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
 def get_gemini_response_t(question,prompt):
     #model = GenerativeModel('gemini-1.5-flash')
     #model = genai.GenerativeModel('gemini-2.5-flash')
@@ -66,7 +75,6 @@ def get_gemini_response_t(question,prompt):
 
 #import google.generativeai as genai
 #def get_gemini_response_t(question,prompt):
-# client = genai.Client(api_key="AIzaSyDGWcTTU4sLb3BoYojLkXfrCdaE8gDcIg4")
 # response = client.models.generate_content(
 #     question,prompt,model="gemini-2.0-flash"
 # )
