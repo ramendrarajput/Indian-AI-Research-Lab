@@ -12,7 +12,7 @@ venv_new/
 
 # Environment Variables
 .env
-
+.env.backup
 # Streamlit
 .streamlit/secrets.toml
 

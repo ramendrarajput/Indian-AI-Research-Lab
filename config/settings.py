@@ -35,3 +35,7 @@ APP_NAME = "Project Brahma"
 VOICE_ENABLED = True
 
 DEBUG = True
+
+# ========= AI Provider =========
+
+AI_PROVIDER = "gemini"

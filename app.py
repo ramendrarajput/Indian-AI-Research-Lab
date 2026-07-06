@@ -1725,60 +1725,58 @@ def main():
         ##initialize our streamlit app
         #st.set_page_config(page_title="Indian AI Research Lab")
         #st.subheader("Advanced Artificial Intelligence Brain")
-        st.title("Indian AI Research Lab")
-        st.caption("Developer: Ramendra Singh Rajput")
-        chat_type = st.selectbox(
-            'Select Application type',
-            ('1: Wikipedia Search','2: AI Chatbot','3: Text Classifier System', '4: Image Classifier System','5: Medical Diagnosis Agent System','6: Agentic AI System',"7: Multi Agentic AI System","8: Research Agent","9: Recipe Maker Agent",'10: Finance Agent',"11: Stock Investment Adviser Robot",'12: Video Summerizer Agent','13: Retrieval Augmented Generation System','14: Text to Image Generator System',"15: Image to Image Regenerator System",'16: Image to Image Overlaping System','17: Image to Video Generator System','18: Application Tracking System','19: AI Engineers Recruiter System','20: Health Expert System','21: Music Expert System','22: MPLRC Expert System','23: Philosophy Expert System','24: Kisan Mitra Chatbot','25: Fine-Tune Your Own Model','26: Developer Resume', '27: Automate Your Desktop'), index=None)
-        if chat_type == None:
+        from ui.navigation import render_sidebar
+
+        selected_app = render_sidebar()
+        if selected_app == None:
             welcome()
-        elif chat_type == "1: Wikipedia Search":
+        elif selected_app == "1: Wikipedia Search":
             Mypedia()
-        elif chat_type == '2: AI Chatbot':
+        elif selected_app == '2: AI Chatbot':
             AI_Chatbot()
-        elif chat_type == "3: Text Classifier System":
+        elif selected_app == "3: Text Classifier System":
             text_proc()
-        elif chat_type == "4: Image Classifier System":
+        elif selected_app == "4: Image Classifier System":
             image_proc()
-        elif chat_type == "5: Medical Diagnosis Agent System":
+        elif selected_app == "5: Medical Diagnosis Agent System":
             MAS()
-        elif chat_type == "6: Agentic AI System":
+        elif selected_app == "6: Agentic AI System":
             ChatGPT()
-        elif chat_type == "7: Multi Agentic AI System":
+        elif selected_app == "7: Multi Agentic AI System":
             Multi_Agents_Chain_UI()    
-        elif chat_type == "10: Finance Agent":
+        elif selected_app == "10: Finance Agent":
             finance_agnt()
-        elif chat_type == "11: Stock Investment Adviser Robot":
+        elif selected_app == "11: Stock Investment Adviser Robot":
             stock_agnt()    
-        elif chat_type == "12: Video Summerizer Agent":
+        elif selected_app == "12: Video Summerizer Agent":
             vdo_agnt()     
-        elif chat_type == "8: Research Agent":
+        elif selected_app == "8: Research Agent":
             Research_system()        
-        elif chat_type == "9: Recipe Maker Agent":
+        elif selected_app == "9: Recipe Maker Agent":
             recipe_system()             
-        elif chat_type == "14: Text to Image Generator System":
+        elif selected_app == "14: Text to Image Generator System":
             Text_2_Image2()
-        elif chat_type == "15: Image to Image Regenerator System":
+        elif selected_app == "15: Image to Image Regenerator System":
             IT_2_Image()    
-        elif chat_type == '16: Image to Image Overlaping System':
+        elif selected_app == '16: Image to Image Overlaping System':
             Image_2_Image_Overlaping()
-        elif chat_type == '17: Image to Video Generator System':
+        elif selected_app == '17: Image to Video Generator System':
             Image_2_video()                
-        elif chat_type == "24: Kisan Mitra Chatbot":
+        elif selected_app == "24: Kisan Mitra Chatbot":
             Kisan_mitra_main()
-        elif chat_type == "18: Application Tracking System":
+        elif selected_app == "18: Application Tracking System":
             ATS()
-        elif chat_type=="20: Health Expert System":
+        elif selected_app=="20: Health Expert System":
             Health_Expert()
-        elif chat_type=="22: MPLRC Expert System":
+        elif selected_app=="22: MPLRC Expert System":
             MP_LR()    
-        elif chat_type=="23: Philosophy Expert System":
+        elif selected_app=="23: Philosophy Expert System":
             Philosophy_Expert()
-        elif chat_type=="26: Developer Resume":
+        elif selected_app=="26: Developer Resume":
             Dev_Resume()
-        elif chat_type=="27: Automate Your Desktop":
+        elif selected_app=="27: Automate Your Desktop":
             Automation()    
-        elif  chat_type == "13: Retrieval Augmented Generation System":
+        elif  selected_app == "13: Retrieval Augmented Generation System":
           with st.sidebar:
            st.title("Menu:")
            pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
