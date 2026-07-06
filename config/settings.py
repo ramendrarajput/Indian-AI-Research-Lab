@@ -30,7 +30,9 @@ PAGE_TITLE = "Indian AI Research Lab"
 
 PAGE_ICON = "🤖"
 
-APP_NAME = "Project Brahma"
+APP_NAME = "Project BRAHMA"
+
+DEVELOPER_NAME = "Ramendra Singh Rajput"
 
 VOICE_ENABLED = True
 
