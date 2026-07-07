@@ -5,12 +5,12 @@ AI Provider Registry
 """
 
 from config.settings import AI_PROVIDER
-from core.providers.gemini import get_text_model
+from core.providers.gemini import get_model #get_text_model
 from core.providers.gemini import get_vision_model
 
 PROVIDERS = {
     "gemini": {
-        "chat": get_text_model,
+        "chat": get_model,
         "vision": get_vision_model,
     }
 }

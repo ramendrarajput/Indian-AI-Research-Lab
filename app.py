@@ -57,6 +57,8 @@ from phi.tools.arxiv_toolkit import ArxivToolkit
 
 import streamlit as st
 
+from core.ai import chat
+
 st.set_page_config(
     page_title="Project BRAHMA",
     page_icon="🕉️",
@@ -66,17 +68,9 @@ st.set_page_config(
 
 def get_gemini_response_t(question,prompt):
     from core.gemini import get_text_model
-
     model = get_text_model()
     response = model.generate_content([question,prompt])
     return response.text
-
-#import google.generativeai as genai
-#def get_gemini_response_t(question,prompt):
-# response = client.models.generate_content(
-#     question,prompt,model="gemini-2.0-flash"
-# )
-# return response.text
 
 def get_gemini_response_i(input,image,prompt):
     model = genai.GenerativeModel('gemini-2.5-flash')##('gemini-pro-vision')
@@ -180,74 +174,20 @@ def speech_to_text():
 
 #chat applications
 def ChatGPT():
-    prompt1 = st.chat_input("You can ask anything")
-    V_input = st.button("Voice")         # Audio input is inactive due to some prob
-    V_enable = st.checkbox('Enable Voice')
-    input_prompt = """
-                   You are an AI agent of Ramendra. You are an expert in chatting like human and continuouly being trained to perform task like an agent. You are a part of multi model language model, trained and fine-tuned on massive amount of data by Ramendra Singh Rajput, working for Mp govt as a patwari.He is the team leader of google AI expert engineers those developed you. He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between philosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ , github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                   you will have to answer questions based on the user input and perform the task given to you.
-                   """
+ st.warning("Under maintenance")
+
+from core.ai import chat
+from core.prompts import TEXT_CLASSIFIER_SYSTEM_PROMPT
+from elevenlabs import play, voices, stream, client
     
-   ## If enter button is clicked
-    if V_enable==True and prompt1:
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,prompt1)
-        if response:
-            af=t_2_s(response)
-            st.write(response)
-            st.success('Done')
-            #p = multiprocessing.Process(target=playsound(af), args=(af))
-            #p.start()
-    elif prompt1:
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,prompt1)
-        if response:
-            st.success('Done')
-            st.write(response)
-            
-    if V_enable==True and V_input:
-        text = speech_to_text()
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,text)
-        if response:
-            af=t_2_s(response)
-            st.write(response)
-            st.success('Done')
-            #p = multiprocessing.Process(target=playsound(af), args=(af))
-            #p.start()
-    elif V_input:
-        text = speech_to_text()
-        st.balloons()
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,text)
-        if response:
-            st.success('Done')
-            st.write(response)
-                     
-#def check():
-    #p = multiprocessing.Process(target=playsound("response.mp3"), args=("response.mp3"))
-    #if st.button("Listen"):
-    #    p.start()
-    #else:
-    #    p.stop()
-    #if st.checkbox("Enable Voice"):
-    #    p.stop()
-
 def text_proc():
-    from elevenlabs import play, voices, stream, client
     prompt = st.text_input("You can ask anything")
-    input_prompt = """
-                   You are an expert in chatting like human. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                   you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark. 
-                   """
-
     if prompt:
         with st.spinner(text='Thinking'):
-             response = get_gemini_response_t(input_prompt,prompt)
+             response = chat(prompt=prompt,system_prompt=TEXT_CLASSIFIER_SYSTEM_PROMPT,)
         if response:
             st.success('Done')
             st.write(response)
-            #client=ElevenLabs(api_key=ELEVENLABS_API_KEY)
             client=ElevenLabs() 
             audio=client.generate(
             text= response,
@@ -303,6 +243,9 @@ def Philosophy_Expert():
             st.write(response)
             af=t_2_s(response)
              
+from core.ai import vision
+from core.prompts import IMAGE_ANALYSIS_SYSTEM_PROMPT             
+
 def image_proc():
     prompt = st.text_input("Here you can ask anything about uploaded image")
     with st.sidebar:
@@ -313,11 +256,6 @@ def image_proc():
                 image = Image.open(uploaded_file)
                 st.image(image, caption="Uploaded Image.", use_column_width=True)
             
-    input_prompt1 = """
-                     You are an expert in understanding invoices.
-                     You will receive input images as invoices &
-                     you will have to answer questions based on the input image
-                    """
     input_prompt2 = """
                      You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
                      You are an expert in understanding images patterns.
@@ -327,10 +265,14 @@ def image_proc():
     if prompt:
         with st.spinner(text='Thinking'):
              image_data = input_image_setup(uploaded_file)
-             response = get_gemini_response_i(input_prompt2, image_data, prompt)
+             response = vision(image=image_data[0],prompt=prompt,system_prompt=IMAGE_ANALYSIS_SYSTEM_PROMPT,)
              if response:
                st.success('Done')
                st.write(response)
+
+from core.ai import vision
+#from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
+from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
 
 def MAS():
     prompt="Just give me detailed analysis of this x-ray image of human body and also provide key references at last"
@@ -341,11 +283,6 @@ def MAS():
          image = Image.open(uploaded_file)
          st.image(image, caption="Uploaded Image.", use_column_width=True)
             
-    input_prompt1 = """
-                     You are an expert in understanding invoices.
-                     You will receive input images as invoices &
-                     you will have to answer questions based on the input image
-                    """
     input_prompt2 = """
                      You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
                      You are an expert in understanding x-ray images of human body.
@@ -355,7 +292,7 @@ def MAS():
     if image:
         with st.spinner(text='Wait...I am analysing it'):
              image_data = input_image_setup(uploaded_file)
-             response = get_gemini_response_i(input_prompt2, image_data, prompt)
+             response = vision(image=image_data[0], prompt=prompt, system_prompt=MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT)
              if response:
                st.success('Done')
                st.write(response)
@@ -618,11 +555,6 @@ def Dev_Resume():
                st.markdown(get_pdf_download_link(pdf_path), unsafe_allow_html=True)
 
 ############################################################################
-##Function to load the model and get the response
-#def get_gemini_response_t(question,prompt):
-#    model = GenerativeModel('gemini-pro')
-#    response = model.generate_content([question,prompt])
-#    return response.text
 
 def get_gemini_response(prompt):
     model = GenerativeModel('gemini-pro')
@@ -1447,7 +1379,8 @@ def Multi_Agents_Chain_UI():
                          """
                          )
                       #AI agent processing
-                      response = get_gemini_response_i(analysis_prompt,image_data,user_query)
+                      #response = get_gemini_response_i(analysis_prompt,image_data,user_query)
+                      response = vision(image=image_data[0],prompt=user_query,system_prompt=IMAGE_ANALYSIS_SYSTEM_PROMPT,)
                       #Display the result
                       st.subheader("LLM Analysis Result")
                       st.markdown(response)
@@ -1505,9 +1438,8 @@ def AI_Chatbot():
                        You are an expert in chatting like human. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
                        you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark. 
                        """
-    input_prompt1 = """
-                        You are Ramendra Singh Rajput, an expert of everything. Your response must be related to user question only. Dont add axtra things. Reply quickly.
-                        """
+    
+    from core.prompts import AI_CHATBOT_SYSTEM_PROMPT
 
     if user_input:  
         st.session_state.messages.append({"content": user_input, "is_user": True})
@@ -1529,10 +1461,8 @@ def AI_Chatbot():
          st.rerun()
         else:
           with st.spinner(text='Thinking'):
-           response = get_gemini_response_t(input_prompt1,user_input)
-          # Simulating AI memory recall
-           #previous_context = "\n".join([chat["content"] for chat in st.session_state.messages if not chat["is_user"]][-5:])  
-           #response = f"Hey {st.session_state.memory['name']},\n{get_gemini_response_t(input_prompt,user_input)}\n"        
+           from core.ai import chat
+           response = chat(prompt=user_input,system_prompt=AI_CHATBOT_SYSTEM_PROMPT,)
            st.session_state.messages.append({"content": response, "is_user": False})
            if response:
             st.success('Done')
@@ -1682,11 +1612,6 @@ def Mypedia():
     # Article Paragraph
     article_paragraph = st.empty()
 
-    # Question Input
-    #question = st.text_input("Question:", "")
-    #if not question:
-    #    st.info("Ask a question about the topic to receive informative answers.", icon="ℹ️")
-
     if topic:
         # Loads Wikipedia summary of the topic
         with st.spinner("Fetching Wikipedia summary..."):
@@ -1711,7 +1636,8 @@ def Mypedia():
 
 # Footer with link
     #link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'
-    #st.markdown(link, unsafe_allow_html=True)            
+    #st.markdown(link, unsafe_allow_html=True)    
+    #         
 def Automation():
         st.warning("Under Maintainance")
 ############################################################

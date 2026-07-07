@@ -551,3 +551,31 @@ Every provider should be replaceable.
 Every feature should be modular.
 
 Project BRAHMA should evolve by adding modules, not by rewriting the architecture.
+
+## Module Categories
+
+Project BRAHMA modules are divided into four categories:
+
+1. AI Modules
+   - AI Chatbot
+   - Health Expert
+   - Music Expert
+   - Philosophy Expert
+   - Text Classifier
+   - Image Classifier
+
+2. Utility Modules
+   - Wikipedia Search
+   - Developer Resume
+   - Desktop Automation
+
+3. Agent Modules
+   - Research Agent
+   - Finance Agent
+   - Recipe Maker Agent
+   - Stock Adviser
+   - Multi-Agent System
+
+4. RAG Modules
+   - PDF Chat
+   - Retrieval Augmented Generation

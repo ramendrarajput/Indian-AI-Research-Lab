@@ -30,13 +30,22 @@ def chat(
 
 from core.registry import get_vision_model_instance
 
-
-def vision(image, prompt):
+def vision(
+    image,
+    prompt: str,
+    system_prompt: str | None = None,
+):
 
     model = get_vision_model_instance()
 
-    response = model.generate_content(
-        [image, prompt]
-    )
+    inputs = []
+
+    if system_prompt:
+        inputs.append(system_prompt)
+
+    inputs.append(image)
+    inputs.append(prompt)
+
+    response = model.generate_content(inputs)
 
     return response.text
