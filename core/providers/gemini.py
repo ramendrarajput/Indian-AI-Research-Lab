@@ -42,3 +42,8 @@ def get_model():
     return genai.GenerativeModel(
         GEMINI_TEXT_MODEL
     )
+
+def get_vision_model():
+    return genai.GenerativeModel(
+        GEMINI_TEXT_MODEL
+    )

@@ -305,3 +305,12 @@ Code follows documentation.
 Documentation follows vision.
 
 Vision drives the project.
+
+Decision:
+All AI interactions must go through core/ai.py.
+
+Reason:
+The application layer must never directly access any AI provider.
+
+Status:
+Accepted

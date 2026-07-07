@@ -65,8 +65,6 @@ st.set_page_config(
 )
 
 def get_gemini_response_t(question,prompt):
-    #model = GenerativeModel('gemini-1.5-flash')
-    #model = genai.GenerativeModel('gemini-2.5-flash')
     from core.gemini import get_text_model
 
     model = get_text_model()

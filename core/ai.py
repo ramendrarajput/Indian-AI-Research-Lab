@@ -27,3 +27,16 @@ def chat(
     response = model.generate_content(inputs)
 
     return response.text
+
+from core.registry import get_vision_model_instance
+
+
+def vision(image, prompt):
+
+    model = get_vision_model_instance()
+
+    response = model.generate_content(
+        [image, prompt]
+    )
+
+    return response.text
