@@ -38,7 +38,6 @@ def get_model():
     """
     Return the configured Gemini text model.
     """
-
     return genai.GenerativeModel(
         GEMINI_TEXT_MODEL
     )

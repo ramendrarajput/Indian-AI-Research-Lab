@@ -124,23 +124,7 @@ def welcome():
     #            """
     #)
 #####################################################################
-
-##Function to process the user input images
-def input_image_setup(uploaded_file):
-    # Check if a file has been uploaded
-    if uploaded_file is not None:
-        # Read the file into bytes
-        bytes_data = uploaded_file.getvalue()
-        image_parts = [
-            {
-                "mime_type": uploaded_file.type,  # Get the mime type of the uploaded file
-                "data": bytes_data
-            }
-        ]
-        return image_parts
-    else:
-        raise FileNotFoundError("No file uploaded")
-
+from ui.pages.image_analysis import image_proc
 
 ##############################################################3
 # Function to convert speech to text
@@ -176,28 +160,10 @@ def speech_to_text():
 def ChatGPT():
  st.warning("Under maintenance")
 
-from core.ai import chat
-from core.prompts import TEXT_CLASSIFIER_SYSTEM_PROMPT
-from elevenlabs import play, voices, stream, client
     
-def text_proc():
-    prompt = st.text_input("You can ask anything")
-    if prompt:
-        with st.spinner(text='Thinking'):
-             response = chat(prompt=prompt,system_prompt=TEXT_CLASSIFIER_SYSTEM_PROMPT,)
-        if response:
-            st.success('Done')
-            st.write(response)
-            client=ElevenLabs() 
-            audio=client.generate(
-            text= response,
-            voice= "Aria",
-            #voice="Rashid",
-            output_format= "mp3_22050_32",
-            #model= "eleven_turbo_v2"
-            model= "eleven_multilingual_v2"
-            )
-            #elevenlabs.play(audio)
+######################################
+from ui.pages.text_processor import text_proc
+######################################
     
 
 def MP_LR():
@@ -246,29 +212,6 @@ def Philosophy_Expert():
 from core.ai import vision
 from core.prompts import IMAGE_ANALYSIS_SYSTEM_PROMPT             
 
-def image_proc():
-    prompt = st.text_input("Here you can ask anything about uploaded image")
-    with st.sidebar:
-         #prompt = st.text_input("Ask anything about the image")  
-         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
-         image = ""
-         if uploaded_file is not None:
-                image = Image.open(uploaded_file)
-                st.image(image, caption="Uploaded Image.", use_column_width=True)
-            
-    input_prompt2 = """
-                     You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                     You are an expert in understanding images patterns.
-                     You will receive input images &
-                     you will have to answer questions based on the input image but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.
-                    """
-    if prompt:
-        with st.spinner(text='Thinking'):
-             image_data = input_image_setup(uploaded_file)
-             response = vision(image=image_data[0],prompt=prompt,system_prompt=IMAGE_ANALYSIS_SYSTEM_PROMPT,)
-             if response:
-               st.success('Done')
-               st.write(response)
 
 from core.ai import vision
 #from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
@@ -1408,66 +1351,7 @@ def Multi_Agents_Chain_UI():
      unsafe_allow_html=True
  )      
 ###########################################################
-from streamlit_chat import message  # Install using: pip install streamlit-chat
-def AI_Chatbot():
-    st.sidebar.title("AI Chatbot")
-    st.sidebar.markdown("""
-    ### Features:
-    - Chat with AI
-    - Memory of past conversations
-    - Sleek UI like ChatGPT
-    """)
-
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-    if "memory" not in st.session_state:
-        st.session_state["memory"] = {}
-
-    st.subheader("My AI Chatbot💬")
-    st.markdown("""
-    Welcome to the AI Chatbot! Type your message below and start chatting.
-    """)
-    #st.caption("Developer: Ramendra Singh Rajput")
-
-    for chat in st.session_state.messages:  
-        message(chat["content"], is_user=chat["is_user"])
-
-    user_input = st.chat_input("Type your message:", key="user_input")
-    st.caption("Powered by Ramendra Singh Rajput")
-    input_prompt = """
-                       You are an expert in chatting like human. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                       you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark. 
-                       """
-    
-    from core.prompts import AI_CHATBOT_SYSTEM_PROMPT
-
-    if user_input:  
-        st.session_state.messages.append({"content": user_input, "is_user": True})
-        # Updating memory with relevant information
-        if "my name is" in user_input.lower():
-             name = user_input.lower().split("my name is")[-1].strip()
-             st.session_state.memory["name"] = name
-             response=f"Ok {name}, i'll remember your name"
-             st.session_state.messages.append({"content": response, "is_user": False})
-             st.rerun()
-        elif "what is my name" in user_input.lower() and "name" in st.session_state.memory:
-             response = f"Your name is {st.session_state.memory['name']}!"
-             st.session_state.messages.append({"content": response, "is_user": False})
-             #st.write(response)
-             st.rerun()
-        elif "what is my name" in user_input.lower() and "name" not in st.session_state.memory:
-         response="Sorry! Please tell me your name"
-         st.session_state.messages.append({"content": response, "is_user": False})
-         st.rerun()
-        else:
-          with st.spinner(text='Thinking'):
-           from core.ai import chat
-           response = chat(prompt=user_input,system_prompt=AI_CHATBOT_SYSTEM_PROMPT,)
-           st.session_state.messages.append({"content": response, "is_user": False})
-           if response:
-            st.success('Done')
-            #st.write(response)
-           st.rerun()
+from ui.pages.ai_chat import AI_Chatbot
 ############################################################
 import wikipediaapi
 from transformers import pipeline
@@ -1571,73 +1455,9 @@ def recognize_speech(language_code):
     except sr.RequestError as e:
         st.write(f"Error with the service; {e}")
 
-def get_search_suggestions(query, language):
-    """
-    Fetches search suggestions from Wikipedia based on the query.
-
-    Args:
-        query (str): The search query.
-        language (str): The language code for the search.
-
-    Returns:
-        list: A list of search suggestions.
-    """
-    url = f"https://{language}.wikipedia.org/w/api.php"
-    params = {
-        "action": "opensearch",
-        "format": "json",
-        "search": query,
-        "limit": 5,
-    }
-    response = requests.get(url, params=params)
-    data = response.json()
-    return data[1]
-
-def Mypedia():
-    topic = st.text_input("Search Topic:", "")
-    if not topic:
-        st.info("Enter a specific topic to search.", icon="ℹ️")
-
-    # Search Suggestions
-    if topic:
-        with st.spinner("Fetching search suggestions..."):
-            suggestions = get_search_suggestions(topic, "en")  # Default language code, "en"
-        st.write("Search Suggestions:")
-        if suggestions:
-            selected_suggestion = st.selectbox("Select a suggestion", suggestions)
-            st.write("Click on a suggestion to learn more.")
-        else:
-            st.write("No suggestions found. Try refining your search.")
-
-    # Article Paragraph
-    article_paragraph = st.empty()
-
-    if topic:
-        # Loads Wikipedia summary of the topic
-        with st.spinner("Fetching Wikipedia summary..."):
-            summary = load_wiki(topic, language="en")  # Default language code, "en"
-
-        # Displays article summary in paragraph
-        article_paragraph.markdown(summary)
-        #st.write("Scroll down for more details or ask a specific question about the topic.")
-
-    #    # -- Questions--
-    #    if question:
-    #        # Loads the question answering pipeline
-    #        with st.spinner("Answering your question..."):
-    #            qa_pipeline = load_qa_pipeline()
-
-    #        # Answers query question using article summary
-    #        result = answer_questions(qa_pipeline, question, summary)
-    #        answer = result["answer"]
-
-    #        # Displaying answer in real-time
-    #        st.write(answer)
-
-# Footer with link
-    #link = 'Created by [Gideon Ogunbanjo](https://gideonogunbanjo.netlify.app)'
-    #st.markdown(link, unsafe_allow_html=True)    
-    #         
+###############################################
+from ui.pages.wikipedia import Mypedia
+##############################################
 def Automation():
         st.warning("Under Maintainance")
 ############################################################
