@@ -32,7 +32,6 @@ def image_proc():
              #image_data = input_image_setup(uploaded_file)
              response = vision(image=image,prompt=f"{IMAGE_ANALYSIS_SYSTEM_PROMPT}\n\n{prompt}",)
              #response = vision(image=image_data,prompt=f"{IMAGE_ANALYSIS_SYSTEM_PROMPT}\n\n{prompt}",)
-             #response = get_gemini_response_i(input_prompt2, image_data, prompt)
              if response:
                st.success('Done')
                st.write(response)

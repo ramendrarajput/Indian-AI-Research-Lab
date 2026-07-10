@@ -1,4 +1,6 @@
+
 ##Function to process the user input images
+
 def input_image_setup(uploaded_file):
     # Check if a file has been uploaded
     if uploaded_file is not None:

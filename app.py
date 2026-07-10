@@ -65,545 +65,58 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-def get_gemini_response_t(question,prompt):
-    from core.gemini import get_text_model
-    model = get_text_model()
-    response = model.generate_content([question,prompt])
-    return response.text
-
-def get_gemini_response_i(input,image,prompt):
-    model = genai.GenerativeModel('gemini-2.5-flash')##('gemini-pro-vision')
-    response = model.generate_content([input,image[0],prompt])
-    return response.text
-
-def get_gemini_response_pdf(prompt_template):
-    model = ChatGoogleGenerativeAI(model='gemini-2.5-flash',temperature=0.3)
-    prompt=PromptTemplate(template=prompt_template, input_variables=["context","question"])
-    chain=load_qa_chain(model,chain_type="stuff",prompt=prompt)
-    return chain
-
-#####################################################################
-def welcome():
-    st.markdown(
-                """
-                Innovating AI for Research and Development.\n
-                Welcome to the Indian AI Research Lab, an advanced artificial intelligence platform designed for research, automation, and AI-driven decision-making. Developed by Ramendra Singh Rajput, this lab integrates state-of-the-art AI models to support various applications across multiple domains.
-
-                Key Features:
-                - 🔍 Wikipedia Search -Retrieve accurate and relevant information quickly.
-                - 🤖 AI Chatbot -Engage in intelligent conversations with a powerful AI chatbot.
-                - 📝 Text Classifier System -Automate text analysis and classification.
-                - 🖼️ Image Classifier System -Identify and categorize images using AI.
-                - 🏥 Medical Diagnosis Agent -Assist in preliminary medical assessments.
-                - 🧠 Agentic & Multi-Agent AI Systems -AI-driven automation and problem-solving.
-                - 💰 Finance & Investment Agents -Get AI-powered financial advice and stock recommendations.
-                - 📽️ Video Summarizer -Condense long videos into concise summaries.
-                - 🖌️ AI-Powered Creativity -Generate text-to-image, image regeneration, and video content.
-                - 👨‍🌾 Kisan Mitra Chatbot -AI-powered agricultural assistance for farmers.
-                - 📚 Retrieval Augmented Generation -Extract insights from documents using AI.
-                - 🛠️ AI for Developers & Recruiters -AI-driven developer resume builder and recruitment assistant.
-                - 🎵 Expert Systems -AI-based assistance in health, philosophy, music, and more.
-
-                This lab is built for AI research and educational purposes only and aims to empower users with cutting-edge AI solutions. Whether you're a researcher, student, or enthusiast, explore the potential of AI with this innovative platform! 🚀
-                """
-    )
-
-    #st.markdown(
-    #            """
-    #            ###### Advanced Artificial Intelligence Brain (AAIB) - A Conversational AI System
-    #            The AAIB is a comprehensive conversational AI system designed to provide users with a range of interactive experiences. This system allows users to select from various application types, including text chatbots, image chatbots, ChatGPT, and more. Depending on the user's selection, the system will engage in conversations, provide information, or assist with tasks.
-    #            The AAIB is equipped with advanced natural language processing (NLP) capabilities, enabling it to understand and respond to user queries in a human-like manner. The system can also process and analyze large volumes of text data, including PDF files, to provide users with relevant information and insights.
-    #            With its modular design, the AAIB can be easily customized and extended to support new application types and use cases. This system has a wide range of potential applications, including customer service, education, healthcare, and more.
-    #            Key Features:
-    #           
-    #            - Advanced NLP capabilities for natural language understanding and response.
-    #            - Ability to process and analyze large volumes of text data, including PDF files.
-    #            - Modular design for easy customization and extension.
-    #            - Potential applications in customer service, education, healthcare, and more.
-    #            """
-    #)
+############################welcome#########################################
+from ui.pages.welcome import welcome
 #####################################################################
 from ui.pages.image_analysis import image_proc
-
 ##############################################################3
-# Function to convert speech to text
-def speech_to_text():
-    #import speech_recognition as sr
-
- # Create a Recognizer object
- r = sr.Recognizer()
-
- # Create a Microphone object to capture audio
- mic = sr.Microphone()
-
- # Set the threshold for the recognizer
- r.energy_threshold = 400
-
- # Start recording audio from the microphone
- with mic as source:
-    print("Speak now!")
-    audio = r.record(source, duration=5)
-
- # Recognize the audio and print the transcription
- try:
-    # Use the recognizer to recognize the audio
-     text = r.recognize_google(audio)
-     print(text)
- except sr.RequestError:
-     print("Could not request results from Google Speech Recognition service")
- except sr.UnknownValueError:
-     print("Unknown error occurred")
+from ui.pages.speech_to_text import speech_to_text
 ################################################################
-
-#chat applications
-def ChatGPT():
- st.warning("Under maintenance")
-
-    
+from ui.pages.chat_gpt import ChatGPT
 ######################################
 from ui.pages.text_processor import text_proc
 ######################################
-    
+from ui.pages.mp_lr import MP_LR
+######################Health Expert System########################
+from ui.pages.health_expert import Health_Expert
+##################################################################
 
-def MP_LR():
-    prompt = st.text_input("Here You can ask anything related to MP Land Record:")
-    input_prompt = """
-                   You are an expert in understanding Madhya pradesh Land Record. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                   you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.
-                   """
-
-    if prompt:
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,prompt)
-        if response:
-            st.success('Done')
-            st.write(response)
-            af=t_2_s(response)
-                        
-def Health_Expert():
-    from prompts.agents.health import HEALTH_PROMPT
-    prompt = st.text_input("Here You can ask anything related to Health.")
-    #input_prompt = """
-    #               You are a Health expert. Expert in understanding medical science, human decies etc.Your each and every answer would be related to medical science. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-    #               you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.
-    #               """
-    input_prompt = HEALTH_PROMPT 
-    if prompt:
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,prompt)
-        if response:
-            st.success('Done')
-            st.write(response)
-            af=t_2_s(response)
-            
-def Philosophy_Expert():
-    from prompts.agents.philosophy import PHILOSOPHY_PROMPT
-    prompt = st.text_input("Here You can ask anything related to Philosophy")
-    input_prompt = PHILOSOPHY_PROMPT
-    if prompt:
-        with st.spinner(text='Thinking'):
-            response = get_gemini_response_t(input_prompt,prompt)
-        if response:
-            st.success('Done')
-            st.write(response)
-            af=t_2_s(response)
-             
+##################philosophy Expert System########################
+from ui.pages.philosophy_expert import Philosophy_Expert
+##################################################################             
 from core.ai import vision
 from core.prompts import IMAGE_ANALYSIS_SYSTEM_PROMPT             
-
-
-from core.ai import vision
-#from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
 from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
-
-def MAS():
-    prompt="Just give me detailed analysis of this x-ray image of human body and also provide key references at last"
-    #prompt = st.text_input("Here you can ask anything about uploaded image")  
-    uploaded_file = st.file_uploader("Upload a medical X-ray image", type=["jpg", "jpeg", "png", "pdf"])
-    image = ""
-    if uploaded_file is not None:
-         image = Image.open(uploaded_file)
-         st.image(image, caption="Uploaded Image.", use_column_width=True)
-            
-    input_prompt2 = """
-                     You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                     You are an expert in understanding x-ray images of human body.
-                     You will receive input images &
-                     you will have to do medical analysis based on the input x-ray image. Firstly check it wether it is x-ray image otherwise just say its not x-ray image. Last line of analisys should contain only profile links of Ramendra singh rajput as water mark.
-                    """
-    if image:
-        with st.spinner(text='Wait...I am analysing it'):
-             image_data = input_image_setup(uploaded_file)
-             response = vision(image=image_data[0], prompt=prompt, system_prompt=MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT)
-             if response:
-               st.success('Done')
-               st.write(response)
-
-def t_2_s(response):
-
- t=response
- # Select the language for the text to be spoken in
- language = 'en'
- # Create an instance of the gTTS class
- tts = gtts.gTTS(text=t, lang=language, slow=False)
- # Save the audio file
- audio_file = 'response.mp3'
- tts.save(audio_file)
- return audio_file
+#####################################################
+from ui.pages.medical_xray import MAS
+#####################################################
 
 import elevenlabs
 from elevenlabs.client import ElevenLabs
 
-ELEVENLABS_API_KEY=os.environ.get("ELEVENLABS_API_KEY")
-
 import subprocess
 import platform
 
-def text_to_speech_with_elevenlabs(input_text, output_filepath):
-    client=ElevenLabs(api_key=ELEVENLABS_API_KEY)
-    audio=client.generate(
-        text= input_text,
-        voice= "Aria",
-        output_format= "mp3_22050_32",
-        model= "eleven_turbo_v2"
-    )
-    elevenlabs.save(audio, output_filepath)
-    return output_filepath
-    #os_name = platform.system()
-    #try:
-    #    if os_name == "Darwin":  # macOS
-    #        subprocess.run(['afplay', output_filepath])
-    #    elif os_name == "Windows":  # Windows
-    #        #subprocess.run(['afplay', output_filepath])
-    #        subprocess.run(['powershell', '-c', f'(New-Object Media.SoundPlayer "{output_filepath}").PlaySync();'])
-    #    elif os_name == "Linux":  # Linux
-    #        subprocess.run(['aplay', output_filepath])  # Alternative: use 'mpg123' or 'ffplay'
-    #    else:
-    #        raise OSError("Unsupported operating system")
-    #except Exception as e:
-    #    print(f"An error occurred while trying to play the audio: {e}")
+from core.tts import text_to_speech_with_elevenlabs
 ##########################################################
-def get_pdf_text(pdf_docs):
-    text=""
-    for pdf in pdf_docs:
-        pdf_reader= PdfReader(pdf)
-        for page in pdf_reader.pages:
-            text+= page.extract_text()
-    return  text
-
-def get_text_chunks(text):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
-    chunks = text_splitter.split_text(text)
-    return chunks
-
-def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-    vector_store.save_local("faiss_index")
-
-def get_conversational_chain():
-
-    prompt_template = """
-    You are an Expert in pdf file reading RAG system. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput . Answer the question as detailed as possible from the provided context. If the question is in hindi then reply in hindi, If the question is in English then reply in english , make sure to provide all the details, if the answer is not in
-    provided context, give answer by yourself but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n
-    Context:\n {context}?\n
-    Question: \n{question}\n
-    Answer:
-    """
-    model = ChatGoogleGenerativeAI(model="gemini-2.5-flash",
-                             temperature=0.3)
-
-    prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
-    chain = create_stuff_documents_chain( llm=model,prompt=prompt)
-    return chain
-
-def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    new_db = FAISS.load_local("faiss_index", embeddings)
-    docs = new_db.similarity_search(user_question)
-    chain = get_conversational_chain()
-    response = chain.invoke(
-    {
-        "context": docs,
-        "question": user_question
-    }
- )
-    st.write(response)
-##########################################################
- 
-def ChatPdf():
-    
-    def get_pdf_text(pdf_docs):
-        text=""
-        for pdf in pdf_docs:
-            pdf_reader=PdfReader(pdf)
-            for page in pdf_reader.pages:
-                text+=page.extract_text()
-        return  text
-    
-    def get_text_chunks(text):
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
-        chunks = text_splitter.split_text(text)
-        return chunks
-    
-    def get_vector_store(text_chunks):
-     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
-     vector_store.save_local("faiss_index")
-
-    ############################################################################
-    
-    def get_conversational_chain():
-
-     prompt_template = """
-     You are an Expert in pdf file reading RAG system. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari.He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also developing Health Expert System, Music Expert System etc.He is having google developer profile.His education and qualification is master of computer application.Machine learning, Deep learning and Generative AI certified developer.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput . Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
-     provided context just say, "answer is not available in the context", don't provide the wrong answer, last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n\n\n
-     Context:\n {context}?\n
-     Question:\n{question}\n
-
-     Answer:
-     """
-
-     model = ChatGoogleGenerativeAI(model="gemini-pro",
-                             temperature=0.3)
-
-     prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
-     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
-
-     return chain
-    
-    def user_input(user_question):
-     embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-    
-     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-     docs = new_db.similarity_search(user_question)
-
-     chain = get_conversational_chain() 
-
-     response = chain(
-        {"input_documents":docs, "question": user_question}
-        , return_only_outputs=True)
-
-     print(response)
-     st.write(response["output_text"])
-
-    user_question=st.text_input("Ask a question from pdf files.")
-    
-    if user_question:
-        user_input(user_question)
-    
-    with st.sidebar:
-        st.title("Menu:")
-        pdf_docs=st.file_uploader("Upload your pdf files and click on the submit & process")
-        if st.button("Submit & Process") :#and user_input is not None:
-            with st.spinner("Processing..."):
-                st.balloons()
-                raw_text=get_pdf_text(pdf_docs)
-                text_chunks=get_text_chunks(raw_text)
-                get_vector_store(text_chunks)
-                st.success("Done")
-
-############################################################################
-#from fpdf import FPDF
-#import base64
-
-# Function to generate PDF
-#def create_pdf(text):
-#    pdf = FPDF()
-#    pdf.set_auto_page_break(auto=True, margin=15)
-#    pdf.add_page()
-#    #pdf.set_font("Arial", size=12)
-#    #pdf.multi_cell(190, 10, text)
-#    # Use a Unicode-compatible font
-#    pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)  # Add a TrueType font
-#    pdf.set_font("DejaVu", size=12)
-
-#    # Save PDF to a temporary file
-#    pdf_path = "generated_content.pdf"
-#    pdf.output(pdf_path, "F")
-#    return pdf_path
-
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-from reportlab.lib.utils import simpleSplit
-import base64
-
-#def create_pdf(text):
-def create_pdf(text):
-    pdf_path = "generated_content.pdf"
-    c = canvas.Canvas(pdf_path, pagesize=letter)
-    width, height = letter  # Get page size
-
-    # Set font
-    c.setFont("Helvetica", 12)
-
-    # Set margins
-    left_margin = 50
-    top_margin = height - 50  # Start from near the top
-
-    # Wrap text to fit within page width
-    max_width = width - 100  # Leave margin on both sides
-    lines = simpleSplit(text, "Helvetica", 12, max_width)
-
-    # Print each line, adjusting Y position
-    y = top_margin
-    line_height = 14  # Space between lines
-
-    for line in lines:
-        if y < 50:  # Move to new page if reaching bottom margin
-            c.showPage()
-            c.setFont("Helvetica", 12)
-            y = height - 50  # Reset Y position
-
-        c.drawString(left_margin, y, line)
-        y -= line_height  # Move to next line
-
-    c.save()
-    return pdf_path
-
-    #pdf_path = "generated_content.pdf"
-    #c = canvas.Canvas(pdf_path, pagesize=letter)
-    #c.setFont("Helvetica", 12)  # Helvetica supports Unicode
-    #c.drawString(1, 50, text)  # Adjust position as needed
-    #c.save()
-    #return pdf_path
-
-
-# Function to get PDF download link
-def get_pdf_download_link(pdf_path, filename="download.pdf"):
-    with open(pdf_path, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode("utf-8")
-    pdf_link = f'<a href="data:application/octet-stream;base64,{base64_pdf}" download="{filename}">📥 Download PDF</a>'
-    return pdf_link
-
-def Dev_Resume():
-    prompt = "Show me your Developers Resume."
-    input_prompt = """
-                   You are a Resume expert. Expert in Resume creating.Here you have to create your developers resume profile his name is Ramendra Singh Rajput. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari since 2015 and have gained greate experience to work with land records, citizence problem solving, land measorment, managing the data of citizence, providing them end to end goverment services in variouse manners. Have gained experience of different different fields work provided by goverment in line order duties. Utilizing this knowledge to develop a powerfull echo system for goverment to help people and solve theire problem in a smart way. He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also working on Health Expert System, Music Expert System projects.He is having google developer profile.His education and qualification is Bachelore of computer application from M.I.M.T. college Narsimhapur(2007-2010),  master of computer application from ShriRam Institue Of Technology and Science(2010 to 2012).Active learner for Machine learning, Deep learning and Generative AI.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ ,github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput
-                   you will have to answer questions based on the user input but last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n
-                   """
-
-    if prompt:
-        with st.spinner(text='Generating Resume'):
-            response = get_gemini_response_t(input_prompt,prompt)
-        if response:
-            st.success('Done')
-            st.write(response)
-            #af=t_2_s(response)
-            if st.button("Generate PDF"):
-              with st.spinner(text='Generating PDF'):
-               pdf_path = create_pdf(response)
-               st.success("PDF generated successfully! Click below to download.")
-               st.markdown(get_pdf_download_link(pdf_path), unsafe_allow_html=True)
-
+from core.rag import get_pdf_text,get_text_chunks,get_vector_store,get_conversational_chain,user_input
+########################################################## 
+from ui.pages.chat_pdf import ChatPdf
 ############################################################################
 
-def get_gemini_response(prompt):
-    model = GenerativeModel('gemini-pro')
-    response = model.generate_content([prompt])
-    return response.text
+########################Resume##################################
+from ui.pages.dev_resume import Dev_Resume
 
-def Kisan_mitra(lang,prompt):
-    input_prompt_e = """
-                   You are an agriculture expert in english language. Expert in Answering questions of farmers related to agriculture in english language.Here you have to answer your farmers question in english language. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari since 2015 and have gained great experience to work with land records, citizence problem solving, land measurment, managing the data of citizence, providing them end to end goverment services in variouse manners. Have gained experience of different different fields work provided by goverment in line order duties. Utilizing this knowledge to develop a powerfull echo system for goverment to help people and solve theire problem in a smart way. He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also working on Health Expert System, Music Expert System projects.He is having google developer profile.His education and qualification is Bachelore of computer application from M.I.M.T. college Narsimhapur(2007-2010),  master of computer application from ShriRam Institue Of Technology and Science(2010 to 2012).Active learner for Machine learning, Deep learning and Generative AI.Keen in making corelation between phylosophy and quantom physics.His resident Address is Yashoda nagar, Azad ward, Gadarwara(M.P.). His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/, github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput, live projects link: https://advanced-artificial-intelligence-brain.streamlit.app/, Github link for projects: https://github.com/ramendrarajput/ ,
-                   you will have to put all links in bottom of page and each link should be seperated by a new line. Have a notification at bottom to contact me to get there business from solved using AI.Last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n 
-                   """
-    
-    input_prompt_h = """
-                   You are an agriculture expert in hindi language. Expert in Answering questions of farmers related to agriculture in hindi language.Here you have to answer your farmers question in hindi language. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari since 2015 and have gained great experience to work with land records, citizence problem solving, land measurment, managing the data of citizence, providing them end to end goverment services in variouse manners. Have gained experience of different different fields work provided by goverment in line order duties. Utilizing this knowledge to develop a powerfull echo system for goverment to help people and solve theire problem in a smart way. He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also working on Health Expert System, Music Expert System projects.He is having google developer profile.His education and qualification is Bachelore of computer application from M.I.M.T. college Narsimhapur(2007-2010),  master of computer application from ShriRam Institue Of Technology and Science(2010 to 2012).Active learner for Machine learning, Deep learning and Generative AI.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/, github id is https://github.com/ramendrarajput, Google developer profile is https://g.dev/ramendrarajput, live projects link: https://advanced-artificial-intelligence-brain.streamlit.app/, Github link for projects: https://github.com/ramendrarajput/ ,
-                   you will have to put all links in bottom of page and each link should be seperated by a new line. Have a notification at bottom to contact me to get there business from solved using AI.Last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n
-                   """
-
-    if prompt:
-        with st.spinner(text='Wait...I am answering...'):
-            if lang=="English":
-             response = get_gemini_response_t(input_prompt_e,prompt)
-             if response:
-              st.success('Done')
-              st.write(response)
-            elif lang=="Hindi":
-             response = get_gemini_response_t(input_prompt_h,prompt)   
-             if response:
-              st.success('Done')
-              st.write(response)
-
-def Kisan_mitra1():
-    
-    input_prompt = """
-                   You are an agriculture expert in hindi language. Expert in Answering questions of farmers related to agriculture in hindi language.Here you have to generate a question on behalf of former regarding the crop disease and answer regarding this disease in hindi language. You are trained by Ramendra Singh Rajput, working for Mp govt as a patwari since 2015 and have gained greate experience to work with land records, citizence problem solving, land measorment, managing the data of citizence, providing them end to end goverment services in variouse manners. Have gained experience of different different fields work provided by goverment in line order duties. Utilizing this knowledge to develop a powerfull echo system for goverment to help people and solve theire problem in a smart way. He is an Artificial intelligence expert, Machine learning and Deep learning engineer,also working on Health Expert System, Music Expert System projects.He is having google developer profile.His education and qualification is Bachelore of computer application from M.I.M.T. college Narsimhapur(2007-2010),  master of computer application from ShriRam Institue Of Technology and Science(2010 to 2012).Active learner for Machine learning, Deep learning and Generative AI.Keen in making corelation between phylosophy and quantom physics.His email id is ramendra.rajput85@gmail.com, linkedin id is https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/ , Google developer profile is https://g.dev/ramendrarajput, live projects link: https://advanced-artificial-intelligence-brain.streamlit.app/, Github link for projects: https://github.com/ramendrarajput/ ,
-                   you will have to put all links in bottom of page and each link should be seperated by a new line. Have a notification at bottom to contact me to get there business from solved using AI.Last line of first questions answer should contain only profile links of Ramendra singh rajput as water mark.\n\n
-                   """
-
-    response = get_gemini_response(input_prompt)
-    if response:
-     st.success('Done')
-     st.write(response)
-
-def Kisan_mitra_main():
-    ##initialize our streamlit app
-        #st.set_page_config(page_title="Advanced Artificial Intelligence Brain",page_icon="Kisan-Mitra.png")
-        #sidebar = st.sidebar(expanded=True)
-        #st.subheader("")
-        st.caption("किसान मित्र चैटबॉट")
-        #st.caption("Developer: Ramendra Singh Rajput")
-        prompt=st.chat_input("Enter Your Question Here")
-        lang = st.radio("Select Language:", ("Hindi","English"))
-        with st.sidebar:
-         st.write("प्रिय किसान बंधु,") 
-         st.write("    मै आपकी किसानी से संबन्धित किसी भी प्रकार की मदद के लिए अग्रसर एक भाषा मॉडल हू जिसे आर्टिफ़िश्यल इंटेलिजेंस की मशीन लर्निंग पद्धति से बनाया गया है। आप यहा मुझे अपनी समस्या से अवगत कराएं। मै आपके हर सवाल का जवाब देने की पूरी कोशिश करुगा। मेरे निर्माता द्वारा मुझे निरंतर नयी जानकारियों से प्रशिक्षित किया जा रहा है। आपसे हुये संवाद से मै निरंतर सीखता जाता हू।")
-         st.write("मैं कृषि से संबंधित आपके सवालों का जवाब दूंगा। मैं एक कृषि विशेषज्ञ हूं और मुझे कृषि संबंधी सवालों का जवाब देने में खुशी होगी।")
-         st.write("अपनी पूछताछ साझा करने में संकोच न करें। मैं आपकी कृषि संबंधी चिंताओं को दूर करने में मदद करने के लिए यहां हूं।")
-         st.write("    कृपया ध्यान दें कि मैं एक कृत्रिम बुद्धिमत्ता (एआई) द्वारा संचालित चैटबॉट हूं और आपके व्यक्तिगत डेटा तक पहुंच या संग्रह करने में सक्षम नहीं हूं।")
-         st.write("निर्माता के बारे मे अधिक जानकारी के लिए आप निर्माता संबंधी प्रश्न कर सकते है।")
-         st.write("धन्यवाद!")        
-         
-        if prompt:
-         Kisan_mitra(lang,prompt)
-        else:
-         Kisan_mitra1()
-                
-
-def ATS():
-    st.warning("Under development.............!")
-
-def Text_2_Image():
-    # Add a text input field for the user to enter the text
-  text = st.text_input("Enter the text you want to generate an image for:")
-
- # Generate the image from the text
-  if st.button("Generate"):
-    image = get_gemini_response_i(text,prompt="Create an image for given text")
-      # Display the generated image
-    st.image(image, caption="Generated image",use_column_width=True)
-     # Get the output.
-    output = image.predictions[0].image_bytes.value
-
-     # Convert the output to a PIL Image object.
-    try:
-      image = Image.open(io.BytesIO(output))
-      st.image(image)
-      #image.show()
-    except IOError as e:
-        print(f"Error opening image: {e}")
+################################################################
 
 
-#def Text_2_Image1():
-#    # Import the necessary libraries.
-#
-# prompt = st.text_input("Enter your prompt:")
-#
-# if st.button("Generate Image"):
-#       model = ImageGenerationModel.from_pretrained("image-generation-text-to-image")
-#       image = model.generate_image(prompt)
-#       st.image(image, caption="Generated image",use_column_width=True)
-#       #st.image(image)
-#       output = image.predictions[0].image_bytes.value
-#       try:
-#           image = Image.open(io.BytesIO(output))
-#           image.show()
-#       except IOError as e:
-#        print(f"Error opening image: {e}")
+############## kisan mitra ########################
+from ui.pages.kisan_mitra import Kisan_mitra_main
+###################################################
+
+############ATS########################
+from ui.pages.application_tracking_system import ATS
+#######################################
 
 def IT_2_Image2():
          
@@ -618,74 +131,13 @@ def IT_2_Image2():
                 image = client(prompt,image).images[0]
                 st.image(image)
 
-def IT_2_Image():
-    import torch
-    from diffusers import AutoPipelineForImage2Image
-    from diffusers.utils import make_image_grid, load_image
-    pipeline = AutoPipelineForImage2Image.from_pretrained(
-    "stable-diffusion-v1-5/stable-diffusion-v1-5", torch_dtype=torch.float16, variant="fp16", use_safetensors=True
-    )
-    pipeline.enable_model_cpu_offload()
-
-    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
-    init_image = ""
-    init_image = Image.open(uploaded_file) 
-    st.image(init_image, caption="Uploaded Image.", use_column_width=True)
-    if uploaded_file is not None:
-            prompt = st.text_input("Enter your prompt:")
-            if prompt:
-                image = pipeline(prompt, image=init_image).images[0]
-                make_image_grid([init_image, image], rows=1, cols=2)
-
-
-def Text_2_Image2():
-    client = InferenceClient("stabilityai/stable-diffusion-3.5-large",token=os.environ.get("HUGGING_FACE_API_KEY"))
-    prompt = st.text_input("Enter your prompt:")
-  # output is a PIL.Image object
-    if st.button("Generate Image"):   
-     with st.spinner(text='Wait...I am generating image'):
-      image = client.text_to_image(prompt)
-      #print(image)
-      st.image(image)
-      #image.show()
-      st.success("Done")
-
-def Image_2_Image_Overlaping1():
-
-    from diffusers import DiffusionPipeline
-    pipe = DiffusionPipeline.from_pretrained()#"Lykon/absolute-reality-1.6525-inpainting")#("yisol/IDM-VTON")
-    prompt = "Astronaut in a jungle, cold color palette, muted colors, detailed, 8k"
-    with st.sidebar:
-         #prompt = st.text_input("Ask anything about the image")  
-         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
-         image = ""
-         if uploaded_file is not None:
-                image = Image.open(uploaded_file)
-                st.image(image, caption="Uploaded Image.", use_column_width=True)
-    image = pipe(prompt).images[0]
-
-def Image_2_Image_Overlaping():
-    from diffusers import AutoPipelineForInpainting, DEISMultistepScheduler
-    import torch
-    from diffusers.utils import load_image
-
-    pipe = AutoPipelineForInpainting.from_pretrained('lykon/absolute-reality-1.6525-inpainting', torch_dtype=torch.float16, variant="fp16")
-    pipe.scheduler = DEISMultistepScheduler.from_config(pipe.scheduler.config) 
-    pipe = pipe.to("cuda")
-
-    img_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting_examples/overture-creations-5sI6fQgYIuo.png"
-    mask_url = "https://raw.githubusercontent.com/CompVis/latent-diffusion/main/data/inpainting_examples/overture-creations-5sI6fQgYIuo_mask.png"
-
-    image = load_image(img_url)
-    mask_image = load_image(mask_url)
-
-
-    prompt = "a majestic tiger sitting on a park bench"
-
-    generator = torch.manual_seed(33)
-    image = pipe(prompt, image=image, mask_image=mask_image, generator=generator, num_inference_steps=25).images[0]  
-    image.save("./image.png")
-
+from ui.pages.image_generation import (
+    IT_2_Image,
+    IT_2_Image2,
+    Text_2_Image2,
+    Image_2_Image_Overlaping,
+    Image_2_Image_Overlaping1,
+)
 
 def Image_2_video():
     pipe = AutoPipelineForInpainting.from_pretrained("diffusers/stable-diffusion-xl-1.0-inpainting-0.1", torch_dtype=torch.float16, variant="fp16").to("cuda")
@@ -1322,7 +774,6 @@ def Multi_Agents_Chain_UI():
                          """
                          )
                       #AI agent processing
-                      #response = get_gemini_response_i(analysis_prompt,image_data,user_query)
                       response = vision(image=image_data[0],prompt=user_query,system_prompt=IMAGE_ANALYSIS_SYSTEM_PROMPT,)
                       #Display the result
                       st.subheader("LLM Analysis Result")
@@ -1464,13 +915,8 @@ def Automation():
 def main():
     try:
         load_dotenv()  # take environment variables from .env
-        ####genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
         openai.api_key=os.getenv("OPENAI_API_KEY")
-        ##initialize our streamlit app
-        #st.set_page_config(page_title="Indian AI Research Lab")
-        #st.subheader("Advanced Artificial Intelligence Brain")
         from ui.navigation import render_sidebar
-
         selected_app = render_sidebar()
         if selected_app == None:
             welcome()
