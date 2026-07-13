@@ -1,3 +1,8 @@
+import os
+import streamlit as st
+from PIL import Image
+from huggingface_hub import InferenceClient
+
 def IT_2_Image():
     import torch
     from diffusers import AutoPipelineForImage2Image
@@ -64,3 +69,16 @@ def Image_2_Image_Overlaping():
     generator = torch.manual_seed(33)
     image = pipe(prompt, image=image, mask_image=mask_image, generator=generator, num_inference_steps=25).images[0]  
     image.save("./image.png")
+
+def IT_2_Image2():
+         
+         client = InferenceClient("stabilityai/stable-diffusion-3.5-large",token=os.environ.get("HUGGING_FACE_API_KEY"))#"black-forest-labs/FLUX.1-dev", token=os.environ.get("HUGGING_FACE_API_KEY"))#"Datou1111/shou_xin", token=os.environ.get("HUGGING_FACE_API_KEY"))
+         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
+         image = ""
+         image = Image.open(uploaded_file)
+         st.image(image, caption="Uploaded Image.", use_column_width=True)   
+         if uploaded_file is not None:
+            prompt = st.text_input("Enter your prompt:")
+            if prompt:
+                image = client(prompt,image).images[0]
+                st.image(image)
