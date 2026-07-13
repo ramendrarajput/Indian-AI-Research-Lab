@@ -3,7 +3,6 @@ import streamlit as st
 from PyPDF2 import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-#from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
@@ -85,20 +84,6 @@ Answer:
     )
 
     return document_chain
-
-#def user_input(user_question):
-#    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-#    #embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
-#    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-#    docs = new_db.similarity_search(user_question)
-#    chain = get_conversational_chain()
-#    response = chain.invoke(
-#    {
-#        "context": docs,
-#        "question": user_question
-#    }
-# )
-#    st.write(response)
 
 def user_input(user_question):
 

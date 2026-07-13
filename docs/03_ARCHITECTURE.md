@@ -18,44 +18,72 @@ Lower layers never depend on higher layers.
 
 # Architecture Diagram
 
+1: This diagram represents the runtime request flow.
 ```
                 User
-
                   │
-
                   ▼
-
           Streamlit UI Layer
-
                   │
-
                   ▼
-
           Services Layer
-
                   │
-
                   ▼
-
           AI Gateway (core)
-
                   │
-
         ┌─────────┴─────────┐
-
         ▼                   ▼
-
   AI Providers         Local Models
-
         │                   │
-
         └─────────┬─────────┘
-
                   ▼
-
               AI Models
 ```
 
+2: This diagram represents the code structure flow.
+```
+
+
+                app.py
+                   │
+        ┌──────────┴──────────┐
+        ▼                     ▼
+      ui/                 services/
+        │                     │
+        ▼                     ▼
+    ui/pages/            agents/
+             \           /
+              \         /
+               ▼       ▼
+                  core/
+               ┌────┴────┐
+               ▼         ▼
+         core/cache.py  core/ai.py
+               │
+               ▼
+            config/
+```
+
+3: This diagram represents my future vision:
+```
+           User
+             │
+             ▼
+         Streamlit UI
+             │
+             ▼
+         Orchestrator
+             │
+   ┌─────────┼─────────┐
+   ▼         ▼         ▼
+Research  Finance   Health
+ Agent     Agent     Agent
+   │         │         │
+   └─────────┼─────────┘
+             ▼
+         Core AI Layer
+             ▼
+        AI Providers
 ---
 
 # Project Structure
@@ -274,6 +302,19 @@ Provider
 Model
 ```
 
+Must be like:
+
+```
+UI/pages
+
+↓
+
+agents
+
+↓
+
+core
+```
 ---
 
 # Provider Registry
@@ -298,13 +339,17 @@ Future providers can be added without changing application logic.
 
 # Dependency Rules
 
-Allowed:
+Allowed
 
 UI
 
 ↓
 
 Services
+
+↓
+
+Agents
 
 ↓
 
@@ -343,6 +388,28 @@ UI
 ---
 
 # Folder Responsibilities
+
+## core/cache.py
+
+Purpose
+
+Central cache manager for heavyweight reusable resources.
+
+Examples
+
+- Gemini Models
+- FAISS
+- Phi Agents
+- Diffusers Pipelines
+- Whisper
+- YOLO
+
+Rules
+
+- Use @st.cache_resource only
+- No business logic
+- No UI
+- Load → Cache → Return
 
 ## agents/
 
@@ -538,6 +605,64 @@ The architecture is designed to support:
 
 without changing the existing architecture.
 
+---
+
+# Agentic AI Architecture
+
+Project BRAHMA follows a modular Agentic AI architecture.
+
+Every agent has a single responsibility.
+
+Agents communicate through shared services instead of directly calling each other whenever possible.
+
+## Agent Categories
+
+- Base Agent
+- Research Agent
+- Finance Agent
+- Stock Agent
+- Health Agent
+- Music Agent
+- Philosophy Agent
+- Image Agent
+- Video Agent
+
+## Agent Flow
+
+UI
+
+↓
+
+Service
+
+↓
+
+Agent
+
+↓
+
+Core AI
+
+↓
+
+Provider
+
+↓
+
+Model
+
+↓
+
+Response
+
+## Agent Rules
+
+- One file = One Agent
+- One agent = One responsibility
+- Agents never contain UI code.
+- Agents should reuse Core services.
+- Heavy resources must be obtained from `core/cache.py`.
+- Agents must not directly initialize heavyweight models.
 ---
 
 # Final Architecture Principle
