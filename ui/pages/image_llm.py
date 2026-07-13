@@ -1,12 +1,11 @@
 import streamlit as st
 from PIL import Image
-
 from core.ai import vision
 from core.image import input_image_setup
 from core.prompts import IMAGE_ANALYSIS_SYSTEM_PROMPT
-from core.image import input_image_setup
 
-def image_proc():
+#def image_proc():
+def image_analysis_ui():
     prompt = st.text_input("Here you can ask anything about uploaded image")
     with st.sidebar:
          #prompt = st.text_input("Ask anything about the image")  
@@ -29,9 +28,7 @@ def image_proc():
                     """
     if prompt:
         with st.spinner(text='Thinking'):
-             #image_data = input_image_setup(uploaded_file)
              response = vision(image=image,prompt=f"{IMAGE_ANALYSIS_SYSTEM_PROMPT}\n\n{prompt}",)
-             #response = vision(image=image_data,prompt=f"{IMAGE_ANALYSIS_SYSTEM_PROMPT}\n\n{prompt}",)
              if response:
                st.success('Done')
                st.write(response)
