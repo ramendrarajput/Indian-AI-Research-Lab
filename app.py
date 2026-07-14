@@ -1,72 +1,26 @@
+import os
 from ui.pages.video_agent import video_agent_ui
-from prompts.agents.health import HEALTH_PROMPT
 import streamlit as st
 from dotenv import load_dotenv
-from google.generativeai import GenerativeModel
-import google.generativeai as genai
-from google.cloud import texttospeech
-import os
-from PIL import Image
-import gtts
-import multiprocessing
-from PyPDF2 import PdfReader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_google_genai import ChatGoogleGenerativeAI
 import speech_recognition as sr
-import io
-from huggingface_hub import InferenceClient
-from diffusers.utils import load_image   
-import torch
-from agents.multi_agents_chain import mac
-from phi.agent import Agent, RunResponse
 from phi.model.google import Gemini
-from phi.tools.yfinance import YFinanceTools
-from phi.tools.duckduckgo import DuckDuckGo
 import openai
-from google.generativeai import upload_file,get_file
-import google.generativeai as genai
-import time
-from pathlib import Path
-import tempfile
 from textwrap import dedent
 from datetime import datetime
 from phi.agent import Agent
 from phi.tools.exa import ExaTools
 from phi.tools.arxiv_toolkit import ArxivToolkit
 import streamlit as st
-from core.ai import chat
 from agents.base_agent import create_web_multimodal_agent
-from agents.arxiv_agent import Arxiv_paper_agent
-from agents.web_search_agent import web_search_agent
-from agents.multi_agents_chain import mac
-
-st.set_page_config(
-    page_title="Project BRAHMA",
-    page_icon="🕉️",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
 from ui.pages.welcome import welcome
 from ui.pages.image_llm import image_analysis_ui
-from ui.pages.speech_to_text import speech_to_text
 from ui.pages.chat_gpt import ChatGPT
 from ui.pages.text_processor import text_proc
 from ui.pages.mp_lr import MP_LR
 from ui.pages.health_expert import Health_Expert
 from ui.pages.philosophy_expert import Philosophy_Expert
-from core.ai import vision
-from core.prompts import IMAGE_ANALYSIS_SYSTEM_PROMPT             
-from core.prompts import MEDICAL_XRAY_ANALYSIS_SYSTEM_PROMPT
 from ui.pages.medical_xray import MAS
-import elevenlabs
-from elevenlabs.client import ElevenLabs
-import subprocess
-import platform
-from core.tts import text_to_speech_with_elevenlabs
 from core.rag import get_pdf_text,get_text_chunks,get_vector_store,get_conversational_chain,user_input
-from ui.pages.chat_pdf import ChatPdf
 from ui.pages.dev_resume import Dev_Resume
 from ui.pages.stock_agent import stock_agnt
 from ui.pages.finance_agent import finance_agnt
@@ -76,14 +30,25 @@ from ui.pages.application_tracking_system import ATS
 from ui.pages.recipe_system import recipe_system
 from ui.pages.research_system import Research_system
 from ui.pages.kisan_mitra import Kisan_mitra_main
-from agents.finance_agent import finance_agent
 from ui.pages.application_tracking_system import ATS
+from ui.pages.multi_agents_chain import Multi_Agents_Chain_UI
+from ui.pages.ai_chat import AI_Chatbot
+import wikipediaapi
+from transformers import pipeline
+from ui.pages.image_to_video import Image_2_video
 from ui.pages.image_generation import (
     IT_2_Image,
     IT_2_Image2,
     Text_2_Image2,
     Image_2_Image_Overlaping,
     Image_2_Image_Overlaping1,
+)
+
+st.set_page_config(
+    page_title="Project BRAHMA",
+    page_icon="🕉️",
+    layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 ## Research Agent
@@ -124,18 +89,10 @@ research_Agent=Agent(
     add_datetime_to_instructions=True,
     save_response_to_file="tmp/{message}.md",
 )
+
 agent = Agent(tools=[ArxivToolkit()], show_tool_calls=True)
 web_multimodal_Agent = create_web_multimodal_agent()
 
-from agents.calculator_agent import Calculator_agent
-from agents.email_agent import Email_agent
-
-from ui.pages.multi_agents_chain import Multi_Agents_Chain_UI
-from agents.multi_agents_chain import mac
-from ui.pages.ai_chat import AI_Chatbot
-import wikipediaapi
-from transformers import pipeline
-import requests
 
 #@st.cache(allow_output_mutation=True)
 def load_qa_pipeline():
@@ -268,7 +225,7 @@ def main():
         elif selected_app == "11: Stock Investment Adviser Robot":
             stock_agnt()    
         elif selected_app == "12: Video Summerizer Agent":
-            vdo_agnt()     
+            video_agent_ui()     
         elif selected_app == "8: Research Agent":
             Research_system()        
         elif selected_app == "9: Recipe Maker Agent":

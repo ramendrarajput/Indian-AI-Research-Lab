@@ -1,4 +1,5 @@
 import streamlit as st
+from agents.multi_agents_chain import mac
 def stock_agnt():
     #st.warning("Under development")
     try:
