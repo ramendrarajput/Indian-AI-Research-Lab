@@ -5,12 +5,11 @@ import streamlit as st
 from PIL import Image
 
 from agents.base_agent import create_web_multimodal_agent
-#from core.vision import vision
 from core.ai import vision
 from core.image import input_image_setup
 from prompts.system.image_analysis import IMAGE_ANALYSIS_SYSTEM_PROMPT
 
-web_multimodal_Agent = create_web_multimodal_agent()
+web_multimodal_agent = create_web_multimodal_agent()
 
 def image_agent_ui():
     uploaded_file = st.file_uploader(
@@ -76,7 +75,7 @@ Search the web if required.
 Provide a detailed response.
 """
 
-            response = web_multimodal_Agent.run(
+            response = web_multimodal_agent.run(
                 prompt,
                 images=[Path(image_path)],
             )

@@ -5,7 +5,7 @@ from pathlib import Path
 from agents.base_agent import web_multimodal_Agent
 from google.generativeai import upload_file, get_file
 
-def vdo_agnt():
+def video_agent_ui():
 # File uploader
  video_file = st.file_uploader(
      "Upload a video file", type=['mp4', 'mov', 'avi'], help="Upload a video for AI analysis"

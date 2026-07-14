@@ -1,4 +1,3 @@
-from ui.pages.multi_agents_chain import mac
 import streamlit as st
 def stock_agnt():
     #st.warning("Under development")

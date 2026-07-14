@@ -1,4 +1,4 @@
-from ui.pages.video_agent import vdo_agnt
+from ui.pages.video_agent import video_agent_ui
 from prompts.agents.health import HEALTH_PROMPT
 import streamlit as st
 from dotenv import load_dotenv
