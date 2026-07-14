@@ -49,7 +49,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 from ui.pages.welcome import welcome
-from ui.pages.image_analysis import image_analysis_ui
+from ui.pages.image_llm import image_analysis_ui
 from ui.pages.speech_to_text import speech_to_text
 from ui.pages.chat_gpt import ChatGPT
 from ui.pages.text_processor import text_proc
@@ -126,49 +126,10 @@ research_Agent=Agent(
 )
 agent = Agent(tools=[ArxivToolkit()], show_tool_calls=True)
 web_multimodal_Agent = create_web_multimodal_agent()
-from phi.tools.calculator import Calculator
 
-Calculator_agent = Agent(
-    name="Calculator Agent",
-    instructions=["Always do calculation according user"],
-    model=Gemini(id='gemini-2.5-flash'),
-    tools=[
-        Calculator(
-            add=True,
-            subtract=True,
-            multiply=True,
-            divide=True,
-            exponentiate=True,
-            factorial=True,
-            is_prime=True,
-            square_root=True,
-        )
-    ],
-    show_tool_calls=True,
-    markdown=True,
-) 
+from agents.calculator_agent import Calculator_agent
+from agents.email_agent import Email_agent
 
-from phi.tools.email import EmailTools
-receiver_email = "ramendra.rajput85@gmail.com"
-sender_email = "ramendra.rajput85@gmail.com"
-sender_name = "Ramendra rajput"
-sender_passkey = "Ram1234$ingh"
-
-Email_agent = Agent(
-    name="Email Agent",
-    instructions=["Always send email to given user"],
-    model=Gemini(id='gemini-2.5-flash'),
-    tools=[
-        EmailTools(
-            receiver_email=receiver_email,
-            sender_email=sender_email,
-            sender_name=sender_name,
-            sender_passkey=sender_passkey,
-        )
-    ],
-    show_tool_calls=True,
-    markdown=True,
-)
 from ui.pages.multi_agents_chain import Multi_Agents_Chain_UI
 from agents.multi_agents_chain import mac
 from ui.pages.ai_chat import AI_Chatbot
