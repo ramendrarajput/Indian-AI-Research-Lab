@@ -4,7 +4,6 @@ from phi.agent import Agent
 from phi.model.google import Gemini
 from phi.tools.arxiv_toolkit import ArxivToolkit
 
-
 @st.cache_resource
 def create_arxiv_agent():
     return Agent(
@@ -17,6 +16,4 @@ def create_arxiv_agent():
         ],
         show_tool_calls=True,
     )
-
-
 Arxiv_paper_agent = create_arxiv_agent()

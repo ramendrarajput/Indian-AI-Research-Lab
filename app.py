@@ -24,7 +24,6 @@ from core.rag import get_pdf_text,get_text_chunks,get_vector_store,get_conversat
 from ui.pages.dev_resume import Dev_Resume
 from ui.pages.stock_agent import stock_agnt
 from ui.pages.finance_agent import finance_agnt
-from ui.pages.research_system import Research_system
 from ui.pages.kisan_mitra import Kisan_mitra_main
 from ui.pages.application_tracking_system import ATS
 from ui.pages.recipe_system import recipe_system
@@ -51,48 +50,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-## Research Agent
-research_Agent=Agent(
-    model=Gemini(id="gemini-2.5-flash"),
-    tools=[ExaTools(start_published_date=datetime.now().strftime("%Y-%m-%d"), type="keyword")],
-    description="You are an advanced AI researcher writing a report on a topic.",
-    instructions=[
-        "For the provided topic, run 3 different searches.Read the results carefully and prepare a NYT worthy report.Focus on facts and make sure to provide references.",
-    ],
-    expected_output=dedent("""\
-    An engaging, informative, and well-structured report in markdown format:
-
-    ## Engaging Report Title
-
-    ### Overview
-    {give a brief introduction of the report and why the user should read this report}
-    {make this section engaging and create a hook for the reader}
-
-    ### Section 1
-    {break the report into sections}
-    {provide details/facts/processes in this section}
-
-    ... more sections as necessary...
-
-    ### Takeaways
-    {provide key takeaways from the article}
-
-    ### References
-    - [Reference 1](link)
-    - [Reference 2](link)
-    - [Reference 3](link)
-
-    - published on {date} in dd/mm/yyyy
-    """),
-    markdown=True,
-    show_tool_calls=True,
-    add_datetime_to_instructions=True,
-    save_response_to_file="tmp/{message}.md",
-)
-
 agent = Agent(tools=[ArxivToolkit()], show_tool_calls=True)
-web_multimodal_Agent = create_web_multimodal_agent()
-
 
 #@st.cache(allow_output_mutation=True)
 def load_qa_pipeline():
