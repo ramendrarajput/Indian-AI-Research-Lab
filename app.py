@@ -9,7 +9,6 @@ from textwrap import dedent
 from datetime import datetime
 from phi.agent import Agent
 from phi.tools.exa import ExaTools
-from phi.tools.arxiv_toolkit import ArxivToolkit
 import streamlit as st
 from agents.base_agent import create_web_multimodal_agent
 from ui.pages.welcome import welcome
@@ -33,7 +32,6 @@ from ui.pages.application_tracking_system import ATS
 from ui.pages.multi_agents_chain import Multi_Agents_Chain_UI
 from ui.pages.ai_chat import AI_Chatbot
 import wikipediaapi
-from transformers import pipeline
 from ui.pages.image_to_video import Image_2_video
 from ui.pages.image_generation import (
     IT_2_Image,
@@ -50,19 +48,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-agent = Agent(tools=[ArxivToolkit()], show_tool_calls=True)
-
-#@st.cache(allow_output_mutation=True)
-def load_qa_pipeline():
-    """
-    Loads the Question-Answering pipeline using the DistilBERT model.
-
-    Returns:
-        Pipeline: The Question-Answering pipeline.
-    """
-    qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
-    return qa_pipeline
-
+###def load_qa_pipeline():
 def load_wiki(query, language="hi"):
     """
     Searches Wikipedia for the given query in the specified language and returns a summary of the first search result.
