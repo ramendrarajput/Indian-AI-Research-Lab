@@ -2,14 +2,7 @@ import os
 from ui.pages.video_agent import video_agent_ui
 import streamlit as st
 from dotenv import load_dotenv
-import speech_recognition as sr
-from phi.model.google import Gemini
 import openai
-from textwrap import dedent
-from datetime import datetime
-from phi.agent import Agent
-from phi.tools.exa import ExaTools
-import streamlit as st
 from agents.base_agent import create_web_multimodal_agent
 from ui.pages.welcome import welcome
 from ui.pages.image_llm import image_analysis_ui
@@ -23,16 +16,16 @@ from core.rag import get_pdf_text,get_text_chunks,get_vector_store,get_conversat
 from ui.pages.dev_resume import Dev_Resume
 from ui.pages.stock_agent import stock_agnt
 from ui.pages.finance_agent import finance_agnt
-from ui.pages.kisan_mitra import Kisan_mitra_main
-from ui.pages.application_tracking_system import ATS
 from ui.pages.recipe_system import recipe_system
 from ui.pages.research_system import Research_system
 from ui.pages.kisan_mitra import Kisan_mitra_main
 from ui.pages.application_tracking_system import ATS
 from ui.pages.multi_agents_chain import Multi_Agents_Chain_UI
 from ui.pages.ai_chat import AI_Chatbot
-import wikipediaapi
 from ui.pages.image_to_video import Image_2_video
+from ui.pages.wikipedia import Mypedia
+from ui.navigation import render_sidebar
+
 from ui.pages.image_generation import (
     IT_2_Image,
     IT_2_Image2,
@@ -48,97 +41,6 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-###def load_qa_pipeline():
-def load_wiki(query, language="hi"):
-    """
-    Searches Wikipedia for the given query in the specified language and returns a summary of the first search result.
-
-    Args:
-        query (str): The search query for Wikipedia.
-        language (str): The language code for the Wikipedia search (default is "hi" for Hindi).
-
-    Returns:
-        str: The summary of the first Wikipedia search result.
-    """
-    headers = {
-        'User-Agent': 'WikiMindAI/1.0 (https://gideonogunbanjo.netlify.app)'
-    }
-    wiki_wiki = wikipediaapi.Wikipedia(language, headers=headers)
-    try:
-        page = wiki_wiki.page(query)
-        summary = page.summary
-        return summary
-    # Disambiguation Error Exception
-    except wikipediaapi.exceptions.DisambiguationError:
-        return "Multiple articles found. Please provide a more specific topic."
-    except wikipediaapi.exceptions.HTTPTimeoutError:
-        return "No internet connection. Please check your internet connection settings."
-    except Exception as e:
-        return f"An Error Occurred: {e}"
-
-def answer_questions(pipeline, question, paragraph):
-    """
-    Uses the Question-Answering pipeline to answer a question based on the given context (paragraph).
-
-    Args:
-        pipeline (Pipeline): The Question-Answering pipeline.
-        question (str): The question to be answered.
-        paragraph (str): The context (paragraph) from which the question should be answered.
-
-    Returns:
-        dict: A dictionary containing the answer to the question and additional details.
-    """
-    input_data = {
-        "question": question,
-        "context": paragraph
-    }
-    output = pipeline(input_data)
-    return output
-
-def text_to_speech(text, language_code):
-    """
-    Converts text to speech in the specified language using gTTS.
-
-    Args:
-        text (str): The text to be converted to speech.
-        language_code (str): The language code for the speech synthesis.
-
-    Returns:
-        AudioSegment: The audio segment containing the speech.
-    """
-    tts = gTTS(text, lang=language_code)
-    mp3_data = BytesIO()
-    tts.write_to_fp(mp3_data)
-    mp3_data.seek(0)
-    audio = AudioSegment.from_file(mp3_data, format="mp3")
-    return audio
-
-def recognize_speech(language_code):
-    """
-    Captures audio from the microphone and converts it into text using SpeechRecognition.
-
-    Args:
-        language_code (str): The language code for the speech recognition.
-
-    Returns:
-        str: The recognized text.
-    """
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("Listening...")
-        audio = recognizer.listen(source)
-
-    try:
-        st.write("Recognizing...")
-        text = recognizer.recognize_google(audio, language=language_code)
-        return text
-    except sr.UnknownValueError:
-        st.write("Could not understand audio.")
-    except sr.RequestError as e:
-        st.write(f"Error with the service; {e}")
-
-from ui.pages.wikipedia import Mypedia
-
 def Automation():
         st.warning("Under Maintainance")
 
@@ -146,7 +48,7 @@ def main():
     try:
         load_dotenv()  # take environment variables from .env
         openai.api_key=os.getenv("OPENAI_API_KEY")
-        from ui.navigation import render_sidebar
+        #from ui.navigation import render_sidebar
         selected_app = render_sidebar()
         if selected_app == None:
             welcome()
