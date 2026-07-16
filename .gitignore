@@ -4,15 +4,19 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*$py.class
 
 # Virtual Environment
 venv/
+.venv/
 venv_new/
 .env/
 
 # Environment Variables
 .env
 .env.backup
+.env.*
+
 # Streamlit
 .streamlit/secrets.toml
 
@@ -34,7 +38,11 @@ Thumbs.db
 # Temporary Files
 temp/
 tmp/
+output/
 
 # Python virtual environments
 .venv/
 env/
+
+# Streamlit
+.streamlit/secrets.toml
