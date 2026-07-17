@@ -1,7 +1,6 @@
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-from config import GOOGLE_API_KEY
-
+from config.settings import GOOGLE_API_KEY
 
 def get_embeddings():
 

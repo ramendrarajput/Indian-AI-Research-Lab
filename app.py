@@ -1,9 +1,5 @@
-import os
-from ui.pages.video_agent import video_agent_ui
 import streamlit as st
-from dotenv import load_dotenv
-import openai
-from agents.base_agent import create_web_multimodal_agent
+from ui.pages.video_agent import video_agent_ui
 from ui.pages.welcome import welcome
 from ui.pages.image_llm import image_analysis_ui
 from ui.pages.chat_gpt import ChatGPT
@@ -25,7 +21,6 @@ from ui.pages.ai_chat import AI_Chatbot
 from ui.pages.image_to_video import Image_2_video
 from ui.pages.wikipedia import Mypedia
 from ui.navigation import render_sidebar
-
 from ui.pages.image_generation import (
     IT_2_Image,
     IT_2_Image2,
@@ -46,9 +41,6 @@ def Automation():
 
 def main():
     try:
-        load_dotenv()  # take environment variables from .env
-        openai.api_key=os.getenv("OPENAI_API_KEY")
-        #from ui.navigation import render_sidebar
         selected_app = render_sidebar()
         if selected_app == None:
             welcome()
