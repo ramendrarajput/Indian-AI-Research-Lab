@@ -4,13 +4,20 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ========= API Keys =========
-GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GEMINI_API_KEY:
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
     raise ValueError(
         "GOOGLE_API_KEY not found in .env"
     )
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+HUGGING_FACE_API_KEY = os.getenv("HUGGING_FACE_API_KEY")
+
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 
 # ========= LLM =========
 from config.models import GEMINI_TEXT_MODEL
