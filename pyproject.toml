@@ -1,0 +1,285 @@
+###############################################################################
+#
+# Project BRAHMA
+#
+# Universal Intelligence Runtime Manifest
+#
+# This file serves two purposes:
+#
+# 1. Python Packaging Configuration
+# 2. Project BRAHMA Runtime Identity Manifest
+#
+###############################################################################
+
+[build-system]
+requires = [
+    "setuptools>=68.0",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+###############################################################################
+# Python Package Metadata
+###############################################################################
+
+[project]
+
+name = "project-brahma"
+
+version = "0.1.0"
+
+description = "Project BRAHMA — Universal Intelligence Runtime for Scientific Research, Engineering, and Cognitive Systems."
+
+readme = "README.md"
+
+requires-python = ">=3.12"
+
+license = { file = "LICENSE" }
+
+authors = [
+    { name = "Ramendra Singh Rajput" }
+]
+
+keywords = [
+
+    "Project BRAHMA",
+
+    "Universal Intelligence",
+
+    "Universal Runtime",
+
+    "Artificial Intelligence",
+
+    "Agentic AI",
+
+    "Artificial General Intelligence",
+
+    "Cognitive Architecture",
+
+    "Knowledge Operating System",
+
+    "Scientific Research",
+
+    "Engineering",
+
+    "Pattern Theory",
+
+    "Information Theory",
+
+    "Physics",
+
+    "Biology",
+
+    "Mathematics",
+
+    "Quantum Computing",
+
+    "Robotics",
+
+    "Cognitive Science",
+
+    "Civilization Scale Intelligence"
+
+]
+
+classifiers = [
+
+    "Development Status :: 3 - Alpha",
+
+    "Intended Audience :: Science/Research",
+
+    "Intended Audience :: Developers",
+
+    "License :: OSI Approved :: MIT License",
+
+    "Programming Language :: Python :: 3",
+
+    "Programming Language :: Python :: 3.12",
+
+    "Operating System :: OS Independent",
+
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+
+    "Topic :: Software Development",
+
+    "Topic :: Scientific/Engineering",
+
+]
+
+dynamic = ["dependencies"]
+
+###############################################################################
+# Project URLs
+###############################################################################
+
+[project.urls]
+
+Homepage = "https://github.com/ramendrarajput/Indian-AI-Research-Lab"
+
+Repository = "https://github.com/ramendrarajput/Indian-AI-Research-Lab"
+
+Documentation = "https://github.com/ramendrarajput/Indian-AI-Research-Lab/tree/main/DOCS"
+
+Research = "https://github.com/ramendrarajput/Indian-AI-Research-Lab/tree/main/RESEARCH"
+
+Issues = "https://github.com/ramendrarajput/Indian-AI-Research-Lab/issues"
+
+###############################################################################
+# Package Discovery
+###############################################################################
+
+[tool.setuptools]
+
+include-package-data = true
+
+[tool.setuptools.packages.find]
+
+where = ["."]
+
+include = [
+
+    "ENGINEERING*",
+
+]
+
+###############################################################################
+# Dynamic Dependencies
+###############################################################################
+
+[tool.setuptools.dynamic]
+
+dependencies = { file = ["requirements.txt"] }
+
+###############################################################################
+#
+# Project BRAHMA Runtime Manifest
+#
+# Everything below this section belongs to BRAHMA itself.
+#
+###############################################################################
+
+[tool.brahma]
+
+###############################################################################
+# Identity
+###############################################################################
+
+project = "Project BRAHMA"
+
+repository = "Indian AI Research Lab"
+
+runtime = "Universal Intelligence Runtime"
+
+version = "0.1.0"
+
+stage = "Engineering"
+
+status = "Active Development"
+
+###############################################################################
+# Founder
+###############################################################################
+
+founder = "Ramendra Singh Rajput"
+
+country = "India"
+
+origin = "Indian AI Research Lab"
+
+###############################################################################
+# Vision
+###############################################################################
+
+vision = "Research creates knowledge. Engineering creates systems. Intelligence creates civilization."
+
+mission = "To build a Universal Intelligence Runtime capable of supporting scientific research, autonomous reasoning, engineering laboratories, and future cognitive civilizations."
+
+###############################################################################
+# Architecture
+###############################################################################
+
+architecture = "Universal Cognitive Architecture"
+
+runtime_model = "Reason → Plan → Execute → Reflect → Learn"
+
+design_principle = "Architecture First"
+
+knowledge_flow = "Research → Engineering → Public → Archive"
+
+###############################################################################
+# Cognitive Engine
+###############################################################################
+
+reasoning = true
+
+planning = true
+
+execution = true
+
+reflection = true
+
+learning = true
+
+memory = true
+
+orchestration = true
+
+###############################################################################
+# Laboratories
+###############################################################################
+
+laboratories = [
+
+    "AI",
+
+    "Biology",
+
+    "Cognitive Science",
+
+    "Finance",
+
+    "Knowledge",
+
+    "Mathematics",
+
+    "Physics",
+
+    "Quantum",
+
+    "Research",
+
+    "Robotics"
+
+]
+
+###############################################################################
+# First Historical Milestone
+###############################################################################
+
+first_boot = "2026-07-30"
+
+first_successful_cognitive_cycle = true
+
+milestone = "Universal Runtime Foundation"
+
+###############################################################################
+# Evolution
+###############################################################################
+
+generation = "v2"
+
+previous_generation = "Indian AI Research Lab"
+
+next_generation = "Universal Intelligence Architecture"
+
+###############################################################################
+# Future
+###############################################################################
+
+future_target = "Scientific Civilization"
+
+future_runtime = "Autonomous Universal Intelligence"
+
+###############################################################################
+# End of Manifest
+###############################################################################
