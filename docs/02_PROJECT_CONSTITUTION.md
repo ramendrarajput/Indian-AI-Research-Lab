@@ -1,267 +1,256 @@
-# Project BRAHMA Constitution
+# PROJECT BRAHMA — CONSTITUTION
 
-> The permanent engineering principles that govern the design, development, and evolution of Project BRAHMA.
+> *"A project may survive on code for years.
+> A civilization survives on principles."*
 
----
-
-# Purpose
-
-This constitution defines the non-negotiable rules that every contributor must follow while developing Project BRAHMA.
-
-Every new feature, module, agent, provider, and service must comply with these principles.
+**— Project BRAHMA**
 
 ---
 
-# Rule 1 — Modular Architecture
+# PREAMBLE
 
-Every component must have a single responsibility.
+Project BRAHMA is founded upon the belief that knowledge is humanity's greatest shared inheritance.
 
-Large files should always be divided into smaller modules.
+This project exists to discover, organize, preserve, and extend scientific understanding through responsible research, disciplined engineering, and open collaboration.
 
----
+Project BRAHMA is not built around a single technology, programming language, artificial intelligence model, or scientific discipline.
 
-# Rule 2 — Separation of Concerns
+It is built around enduring principles.
 
-Each folder has one responsibility only.
-
-Example:
-
-config/
-Configuration only
-
-core/
-AI Providers and AI Gateway
-
-agents/
-AI Agents
-
-services/
-Business Logic
-
-ui/
-User Interface
-
-prompts/
-Prompt Engineering
-
-tools/
-External Integrations
-
-data/
-Knowledge Base
+This Constitution defines those principles.
 
 ---
 
-# Rule 3 — Provider Independence
+# ARTICLE I — PURPOSE
 
-No business logic should directly depend on any AI provider.
+The purpose of Project BRAHMA is:
 
-The application must be capable of switching between providers without changing business logic.
-
-Supported providers may include:
-
-- Gemini
-- OpenAI
-- Claude
-- Ollama
-- DeepSeek
-- Future Providers
+* To advance scientific understanding.
+* To transform research into engineering.
+* To preserve knowledge for future generations.
+* To encourage open scientific collaboration.
+* To build systems that remain useful beyond the lifetime of their creators.
 
 ---
 
-# Rule 4 — AI Gateway
+# ARTICLE II — KNOWLEDGE FIRST
 
-Every AI request must pass through the AI Gateway.
+Knowledge shall always take precedence over software.
 
-The rest of the application must never directly call Gemini, OpenAI, or any provider SDK.
+Software exists to express knowledge.
 
----
+Research exists to discover knowledge.
 
-# Rule 5 — Single Responsibility Principle
+Documentation exists to preserve knowledge.
 
-Each file should perform only one task.
-
-Avoid large files.
-
-Preferred maximum file size:
-
-300–500 lines.
+Knowledge is the permanent asset of Project BRAHMA.
 
 ---
 
-# Rule 6 — Security First
+# ARTICLE III — RESEARCH BEFORE IMPLEMENTATION
 
-Never commit:
+Every engineering decision should originate from research whenever possible.
 
-- API Keys
-- Passwords
-- Secrets
-- Tokens
-- Credentials
-- Private Certificates
+Research should guide engineering.
 
-Use:
+Engineering should never replace scientific inquiry.
 
-.env
-
-Only commit:
-
-.env.example
+Hypotheses must remain distinguishable from established knowledge.
 
 ---
 
-# Rule 7 — Documentation First
+# ARTICLE IV — LONG-TERM THINKING
 
-Every major feature must be documented before implementation.
+Every decision shall be evaluated not only for today's requirements, but for its value over decades.
 
-Documentation is part of the software.
+Project BRAHMA shall favor:
 
----
+* stability,
+* maintainability,
+* simplicity,
+* continuity,
 
-# Rule 8 — Clean Code
-
-Code must be:
-
-- Readable
-- Modular
-- Reusable
-- Maintainable
-- Testable
-
-Avoid duplicate code.
+over temporary convenience.
 
 ---
 
-# Rule 9 — Git Workflow
+# ARTICLE V — OPEN SCIENCE
 
-Small commits only.
+Project BRAHMA supports:
 
-Every commit should represent one logical change.
+* openness,
+* reproducibility,
+* transparency,
+* scientific integrity,
+* collaborative learning.
 
-Example:
-
-feat:
-
-fix:
-
-refactor:
-
-docs:
-
-test:
-
-style:
+Knowledge should remain accessible whenever ethically and legally possible.
 
 ---
 
-# Rule 10 — Testing
+# ARTICLE VI — ENGINEERING RESPONSIBILITY
 
-Every major feature should be tested before pushing to GitHub.
+Engineering exists to make research reliable.
 
-Broken code must never be pushed to the main branch.
+Engineering shall:
 
----
-
-# Rule 11 — Naming Convention
-
-Use meaningful names.
-
-Good:
-
-chat_agent.py
-
-vision_service.py
-
-embedding.py
-
-Bad:
-
-abc.py
-
-test2.py
-
-newfile.py
+* simplify complexity,
+* improve reliability,
+* reduce duplication,
+* enable future research,
+* never compromise scientific integrity.
 
 ---
 
-# Rule 12 — Folder Independence
+# ARTICLE VII — DOCUMENTATION
 
-Each folder should remain independent.
+Documentation is considered part of engineering.
 
-Dependencies should always point inward.
+No significant research or engineering contribution shall exist without appropriate documentation.
 
-Example:
+Every important decision should be explainable.
 
-UI
-
-↓
-
-Services
-
-↓
-
-Core
-
-↓
-
-Providers
-
-Never reverse the dependency direction.
+Every important architecture should be documented.
 
 ---
 
-# Rule 13 — Backward Compatibility
+# ARTICLE VIII — MODULARITY
 
-Whenever possible, new features should not break existing functionality.
+Project BRAHMA shall remain modular.
 
-Refactoring should preserve public interfaces.
+Each component should have one clear responsibility.
 
----
+Independent systems should remain independently replaceable.
 
-# Rule 14 — Scalability
-
-Every design decision should support future expansion.
-
-The architecture should accommodate:
-
-- New AI Models
-- New Providers
-- New Agents
-- New Services
-- New User Interfaces
-
-without requiring major redesign.
+Growth should occur through extension rather than reconstruction.
 
 ---
 
-# Rule 15 — Open Source Quality
+# ARTICLE IX — ARCHITECTURAL STABILITY
 
-Every module should be written as if it will be reviewed by thousands of developers.
+Architecture shall not be modified without careful review.
 
-Maintain high standards of readability and professionalism.
+Every architectural change must satisfy:
 
----
+* clear necessity,
+* documented reasoning,
+* migration strategy,
+* long-term benefit.
 
-# Engineering Philosophy
-
-Think Long-Term.
-
-Write Once.
-
-Reuse Everywhere.
-
-Keep It Simple.
-
-Design Before Code.
-
-Documentation Before Implementation.
-
-Build for the Future.
+Frequent architectural redesign shall be avoided.
 
 ---
 
-# Final Principle
+# ARTICLE X — KNOWLEDGE PRESERVATION
 
-Project BRAHMA is not a collection of AI scripts.
+Research should never be discarded without review.
 
-It is a long-term AI Research Platform built with engineering discipline, modular architecture, and production-quality standards.
+Engineering history should remain traceable.
+
+Historical versions should be archived rather than erased whenever practical.
+
+Project BRAHMA values continuity over convenience.
+
+---
+
+# ARTICLE XI — CONTRIBUTION
+
+Every contributor is expected to contribute responsibly.
+
+Quality is preferred over quantity.
+
+Understanding is preferred over speed.
+
+Thoughtful improvements are preferred over unnecessary complexity.
+
+Every contribution should strengthen the project.
+
+---
+
+# ARTICLE XII — SCIENTIFIC DISCIPLINES
+
+Project BRAHMA recognizes that scientific disciplines are interconnected.
+
+Current laboratories include:
+
+* Mathematics
+* Physics
+* Artificial Intelligence
+* Quantum Science
+* Robotics
+* Biology
+* Cognitive Science
+
+Additional disciplines may be added without changing the underlying philosophy.
+
+---
+
+# ARTICLE XIII — CONTINUOUS EVOLUTION
+
+Project BRAHMA shall continuously evolve.
+
+However,
+
+its principles should evolve far more slowly than its implementation.
+
+Technologies may change.
+
+Architecture may mature.
+
+Scientific understanding may expand.
+
+Core values should remain stable.
+
+---
+
+# ARTICLE XIV — FUTURE GENERATIONS
+
+Project BRAHMA is designed not only for its current contributors but also for future researchers who have not yet joined the project.
+
+Every document should be understandable.
+
+Every architecture should be maintainable.
+
+Every discovery should be extendable.
+
+The project should remain useful long after its original authors.
+
+---
+
+# ARTICLE XV — GUIDING PRINCIPLES
+
+Project BRAHMA shall always strive to be:
+
+* Curious before certain.
+* Scientific before speculative.
+* Simple before complicated.
+* Modular before monolithic.
+* Stable before fashionable.
+* Collaborative before isolated.
+* Research-driven before implementation-driven.
+* Architecture-driven before feature-driven.
+* Knowledge-preserving before knowledge-consuming.
+
+---
+
+# FINAL DECLARATION
+
+Project BRAHMA is more than a software repository.
+
+It is an evolving scientific institution dedicated to understanding reality through research, engineering, and disciplined observation.
+
+Its greatest success will not be measured by the software it creates,
+
+but by the knowledge it preserves,
+
+the ideas it inspires,
+
+and the generations it empowers.
+
+---
+
+> *"Knowledge may begin with questions,
+> Engineering may transform it into tools,
+> But civilization advances only when both are preserved."*
+
+**Project BRAHMA Constitution**
