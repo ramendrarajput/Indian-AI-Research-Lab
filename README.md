@@ -1,10 +1,24 @@
 # 🕉️ PROJECT BRAHMA
 
-# Universal Intelligence Architecture
+## **Bharat Research Architecture for Holistic Multidisciplinary Advancement**
 
-### Powered by Indian AI Research Lab 🇮🇳
+### Universal Intelligence Architecture
 
-> **"Research creates knowledge. Engineering creates intelligence. Intelligence creates civilization."**
+*Powered by the **Indian AI Research Lab** 🇮🇳*
+
+---
+
+> **BRAHMA is no longer just an acronym.**
+>
+> It has evolved into the identity of a long-term scientific mission—  
+> a **Universal Intelligence Architecture** designed to unify research,
+> engineering, and multidisciplinary knowledge into a single cognitive runtime.
+
+---
+
+> *"Research creates knowledge.*  
+> *Engineering creates intelligence.*  
+> *Intelligence creates civilization."*
 
 ---
 
