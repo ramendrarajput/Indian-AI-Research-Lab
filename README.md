@@ -900,33 +900,21 @@ Every architectural decision is documented before implementation.
 
 # 🌱 Living Project
 
-Project BRAHMA is **not being developed as a software product**.
+Project BRAHMA is not a finished product.
 
-It is being evolved as a **living scientific ecosystem**.
+It is a living research journey.
 
-Every commit...
+Every commit represents a new observation.
 
-Every architectural decision...
+Every architectural decision becomes part of its evolving intelligence.
 
-Every experiment...
+Every laboratory will continue to grow independently while remaining connected through the Universal Runtime.
 
-Every runtime improvement...
+This repository is intended to evolve over years—not weeks.
 
-Every laboratory...
+The architecture you see today is only the foundation.
 
-Every document...
-
-becomes part of its permanent evolutionary history.
-
-Nothing meaningful is discarded.
-
-Every version reflects the intellectual growth of the project itself.
-
-Project BRAHMA is intended to grow for decades—not merely until its first release.
-
-Its ultimate objective is not simply to build intelligent software.
-
-Its objective is to establish a permanent engineering and research ecosystem capable of supporting future generations of scientific discovery.
+The future versions of Project BRAHMA will continue expanding toward a Universal Intelligence Architecture capable of integrating scientific knowledge, autonomous reasoning, and collaborative cognition.
 
 ---
 
@@ -935,8 +923,6 @@ Its objective is to establish a permanent engineering and research ecosystem cap
 *Every architecture is evolutionary.*
 
 *Knowledge alone is permanent."*
-
----
 
 ---
 
@@ -1061,54 +1047,6 @@ Nothing important is forgotten.
 
 ---
 
-# 📦 Installation
-
-Clone the repository
-
-```bash
-git clone https://github.com/ramendrarajput/Indian-AI-Research-Lab.git
-```
-
-Move into the project
-
-```bash
-cd Indian-AI-Research-Lab
-```
-
-Create virtual environment
-
-```bash
-python -m venv venv
-```
-
-Activate
-
-Windows
-
-```bash
-venv\Scripts\activate
-```
-
-Linux
-
-```bash
-source venv/bin/activate
-```
-
-Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Run BRAHMA Runtime
-
-```bash
-streamlit run app.py
-```
-
----
-
 # 🤝 Contributing
 
 Project BRAHMA welcomes researchers, developers, scientists, engineers, philosophers and students.
@@ -1128,18 +1066,6 @@ If you would like to contribute,
 Every contribution is expected to respect the constitutional architecture of the project.
 
 Architecture comes before implementation.
-
----
-
-# 👨‍💻 Founder
-
-## Ramendra Singh Rajput
-
-Government Patwari • MCA • Independent Researcher
-
-Founder — Indian AI Research Lab
-
-Creator — Project BRAHMA
 
 ---
 
@@ -1164,7 +1090,8 @@ It is built through:
 - Engineering
 - Faith
 
-##**"The birthplace of an idea does not determine its"** ##**"destiny. Its architecture does."**
+## *"The birthplace of an idea does not determine its"*
+## *"destiny. Its architecture does."*
 
 ---
 
@@ -1196,26 +1123,6 @@ but to understand Intelligence itself.
 
 ---
 
-# 🌱 Living Project
-
-Project BRAHMA is not a finished product.
-
-It is a living research journey.
-
-Every commit represents a new observation.
-
-Every architectural decision becomes part of its evolving intelligence.
-
-Every laboratory will continue to grow independently while remaining connected through the Universal Runtime.
-
-This repository is intended to evolve over years—not weeks.
-
-The architecture you see today is only the foundation.
-
-The future versions of Project BRAHMA will continue expanding toward a Universal Intelligence Architecture capable of integrating scientific knowledge, autonomous reasoning, and collaborative cognition.
-
----
-
 # ❤️ Acknowledgement
 
 Project BRAHMA is developed with the assistance of modern AI tools, open scientific knowledge, and countless researchers whose work has advanced humanity's understanding of intelligence.
@@ -1237,3 +1144,20 @@ Their contributions form part of the foundation upon which this architecture is 
 🇮🇳 Built in India
 
 *"The journey has only begun."*
+
+---
+
+# 👨‍💻 Founder
+
+## Ramendra Singh Rajput
+
+Government Patwari • MCA • Independent Researcher
+
+Founder — Indian AI Research Lab
+
+Creator — Project BRAHMA
+
+*"Patwari by profession."*
+*"Engineer by education."*
+*"Researcher by passion."*
+---
