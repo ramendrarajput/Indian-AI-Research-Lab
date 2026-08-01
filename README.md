@@ -1069,7 +1069,7 @@ Architecture comes before implementation.
 
 ---
 
-### Philosophy
+## 🧭 Philosophy
 
 Project BRAHMA is being built independently from **Gadarwara**, a small town in Madhya Pradesh, India.
 
@@ -1157,8 +1157,8 @@ Founder — Indian AI Research Lab
 
 Creator — Project BRAHMA
 
-*"Patwari by profession."*
-*"Engineer by education."*
-*"Researcher by passion."*
+- *Patwari by profession.*
+- *Engineer by education.*
+- *Researcher by passion.*
 
 ---
