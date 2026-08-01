@@ -1090,8 +1090,8 @@ It is built through:
 - Engineering
 - Faith
 
-*"The birthplace of an idea does not determine its"*
-*"destiny. Its architecture does."*
+*"The birthplace of an idea does not determine its*
+*destiny. Its architecture does."*
 
 ---
 
@@ -1160,4 +1160,5 @@ Creator — Project BRAHMA
 *"Patwari by profession."*
 *"Engineer by education."*
 *"Researcher by passion."*
+
 ---
