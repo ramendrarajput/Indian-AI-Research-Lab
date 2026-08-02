@@ -102,26 +102,33 @@ def print_runtime_status():
 
     print()
 
-    print(f"Kernel        : {kernel_info['kernel']}")
+    print(f"Runtime      : {kernel_info['runtime']}")
 
-    print(f"Runtime       : {runtime_info['state']}")
+    print(f"Version      : {kernel_info['version']}")
 
-    print(f"Version       : {runtime_info['version']}")
+    print(f"State        : {kernel_info['state']}")
+
+    print(f"Loaded Labs  : {kernel_info['loaded_labs']}")
 
     print()
 
     print("Registered Services")
 
-    for service in runtime_info["services"]:
+    services = runtime_info["services"]
 
-        print(f"  ✓ {service}")
+    if isinstance(services, list):
+        for service in services:
+            print(f"  ✓ {service}")
+
+    elif isinstance(services, dict):
+        for name, count in services.items():
+            print(f"  {name}: {count}")
 
     print()
 
     print("────────────────────────────────────────────")
 
     print()
-
 
 # ==========================================================
 # Welcome

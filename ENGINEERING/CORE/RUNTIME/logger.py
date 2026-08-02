@@ -102,6 +102,12 @@ def runtime(message: str) -> None:
 def boot(message: str) -> None:
     logger.info(f"[BOOT] {message}")
 
+# -------------------------------------------------------------------
+# Startup Logs
+# -------------------------------------------------------------------
+
+def startup(message: str) -> None:
+    logger.info(f"[STARTUP] {message}")
 
 def kernel(message: str) -> None:
     logger.info(f"[KERNEL] {message}")
