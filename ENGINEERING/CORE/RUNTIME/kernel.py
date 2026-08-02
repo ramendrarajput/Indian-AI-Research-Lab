@@ -2,16 +2,16 @@
 PROJECT BRAHMA
 Universal Runtime Kernel
 
-Author:
-    Ramendra Singh Rajput
+Author
+------
+Ramendra Singh Rajput
 
 Description
 -----------
-The Runtime Kernel is the central execution engine of
-Project BRAHMA.
+The Runtime Kernel is the execution engine of Project BRAHMA.
 
 Unlike boot.py (which initializes the runtime),
-the Kernel manages the lifecycle of the running runtime.
+the Kernel manages the lifecycle of the running Runtime.
 
 Responsibilities
 ----------------
@@ -23,38 +23,21 @@ Responsibilities
 
 Future Responsibilities
 -----------------------
-• Laboratory Management
+• Laboratory Lifecycle
 • Universal Agent Lifecycle
-• Scheduler
 • Event Bus
 • Memory Engine
+• Scheduler
 """
 
 from __future__ import annotations
 
-from enum import Enum, auto
-
 from ENGINEERING.CORE.RUNTIME.context import runtime_context
 from ENGINEERING.CORE.RUNTIME.logger import kernel
-from ENGINEERING.CORE.RUNTIME.state import runtime_state
-
-
-# ==========================================================
-# Kernel State
-# ==========================================================
-
-class KernelStatus(Enum):
-    """
-    Runtime Kernel States.
-    """
-
-    STOPPED = auto()
-
-    STARTING = auto()
-
-    RUNNING = auto()
-
-    STOPPING = auto()
+from ENGINEERING.CORE.RUNTIME.state import (
+    RuntimeState,
+    runtime_state,
+)
 
 
 # ==========================================================
@@ -64,64 +47,68 @@ class KernelStatus(Enum):
 class RuntimeKernel:
     """
     Universal Runtime Kernel.
+
+    The Kernel controls the Runtime lifecycle.
     """
 
     def __init__(self):
+        pass
 
-        self.status = KernelStatus.STOPPED
-
-    # ------------------------------------------------------
+    # ======================================================
 
     def start(self):
 
-        if self.status == KernelStatus.RUNNING:
+        if runtime_state.is_running():
 
-            kernel("Kernel already running.")
+            kernel("Runtime Kernel already running.")
 
             return
 
-        self.status = KernelStatus.STARTING
+        runtime_state.set(RuntimeState.LOADING_KERNEL)
 
-        kernel("Starting Runtime Kernel...")
+        kernel("Loading Runtime Kernel...")
 
-        # Future:
         #
-        # initialize scheduler
-        # initialize event bus
-        # initialize memory
-        # initialize universal agent
+        # Future
+        #
+        # Initialize Scheduler
+        # Initialize Event Bus
+        # Initialize Memory
+        # Initialize Universal Agent
         #
 
-        self.status = KernelStatus.RUNNING
+        runtime_state.set(RuntimeState.RUNNING)
 
         kernel("Runtime Kernel Started.")
 
-    # ------------------------------------------------------
+    # ======================================================
 
     def stop(self):
 
-        if self.status == KernelStatus.STOPPED:
+        if runtime_state.is_stopped():
 
-            kernel("Kernel already stopped.")
+            kernel("Runtime Kernel already stopped.")
 
             return
 
-        self.status = KernelStatus.STOPPING
+        runtime_state.set(RuntimeState.STOPPING)
 
         kernel("Stopping Runtime Kernel...")
 
-        # Future:
         #
-        # shutdown services
-        # unload labs
-        # flush memory
+        # Future
+        #
+        # Shutdown Services
+        # Flush Memory
+        # Save Session
+        # Unload Labs
         #
 
-        self.status = KernelStatus.STOPPED
+        runtime_state.set(RuntimeState.STOPPED)
 
         kernel("Runtime Kernel Stopped.")
 
-    # ------------------------------------------------------
+    # ======================================================
 
     def restart(self):
 
@@ -131,33 +118,61 @@ class RuntimeKernel:
 
         self.start()
 
-    # ------------------------------------------------------
+    # ======================================================
+
+    def pause(self):
+
+        runtime_state.set(RuntimeState.PAUSED)
+
+        kernel("Runtime Paused.")
+
+    # ======================================================
+
+    def resume(self):
+
+        runtime_state.set(RuntimeState.RUNNING)
+
+        kernel("Runtime Resumed.")
+
+    # ======================================================
+
+    def fail(self):
+
+        runtime_state.set(RuntimeState.FAILED)
+
+        kernel("Runtime Failure Detected.")
+
+    # ======================================================
 
     def is_running(self) -> bool:
 
-        return self.status == KernelStatus.RUNNING
+        return runtime_state.is_running()
 
-    # ------------------------------------------------------
+    # ======================================================
 
     def runtime_status(self):
 
         return {
 
-            "kernel": self.status.name,
-
-            "runtime": runtime_state.stage.name,
+            "runtime": runtime_context.runtime_name,
 
             "version": runtime_context.version,
 
-            "runtime_name": runtime_context.runtime_name,
+            "state": runtime_state.state.name,
+
+            "boot_time": runtime_context.boot_time,
 
             "loaded_labs": len(runtime_context.loaded_labs),
+
+            "services": runtime_context.registry.summary()
+            if runtime_context.registry
+            else {},
 
         }
 
 
 #
-# Global Kernel
+# Global Runtime Kernel
 #
 
 runtime_kernel = RuntimeKernel()

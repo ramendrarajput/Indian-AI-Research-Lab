@@ -1,27 +1,58 @@
 """
 PROJECT BRAHMA
-Runtime State Management
+Universal Runtime State
 
-Author:
-    Ramendra Singh Rajput
+Author
+------
+Ramendra Singh Rajput
 
-Description:
-    Defines the global runtime state for the BRAHMA Universal Runtime.
+Description
+-----------
+Defines the global lifecycle state of the Project BRAHMA Runtime.
 
-The Runtime State represents the current lifecycle stage of the system.
+Every runtime component must read and update the same RuntimeState.
 
-Boot
+There is exactly ONE runtime lifecycle.
+
+Runtime Lifecycle
+
+CREATED
+    ↓
+BOOTING
+    ↓
+INITIALIZING
+    ↓
+LOADING_KERNEL
+    ↓
+LOADING_SERVICES
+    ↓
+LOADING_LABS
+    ↓
+READY
+    ↓
+RUNNING
+    ↓
+PAUSED
+    ↓
+STOPPING
+    ↓
+STOPPED
+
+If any fatal error occurs
+
+FAILED
+
+Philosophy
+----------
+One Runtime
+
 ↓
-Initialization
-↓
-Kernel Loading
-↓
-Runtime Ready
-↓
-Shutdown
 
-Every runtime component reads this state instead of maintaining
-its own independent status.
+One State
+
+↓
+
+One Truth
 """
 
 from __future__ import annotations
@@ -29,9 +60,13 @@ from __future__ import annotations
 from enum import Enum, auto
 
 
+# ==========================================================
+# Runtime Lifecycle
+# ==========================================================
+
 class RuntimeState(Enum):
     """
-    Universal Runtime Lifecycle States.
+    Universal Runtime Lifecycle.
     """
 
     CREATED = auto()
@@ -59,41 +94,107 @@ class RuntimeState(Enum):
     FAILED = auto()
 
 
+# ==========================================================
+# Runtime State Manager
+# ==========================================================
+
 class RuntimeStatus:
     """
-    Stores the current runtime status.
+    Global Runtime State Manager.
 
-    A single shared object should be used across the runtime.
+    Every runtime module shares the same instance.
     """
 
     def __init__(self):
+
         self._state = RuntimeState.CREATED
+
+    # ------------------------------------------------------
 
     @property
     def state(self) -> RuntimeState:
+
         return self._state
 
+    # ------------------------------------------------------
+
+    def get(self) -> RuntimeState:
+
+        return self._state
+
+    # ------------------------------------------------------
+
     def set(self, state: RuntimeState) -> None:
+
         self._state = state
 
+    # ------------------------------------------------------
+    # State Checks
+    # ------------------------------------------------------
+
+    def is_created(self) -> bool:
+
+        return self._state == RuntimeState.CREATED
+
+    def is_booting(self) -> bool:
+
+        return self._state == RuntimeState.BOOTING
+
+    def is_initializing(self) -> bool:
+
+        return self._state == RuntimeState.INITIALIZING
+
+    def is_loading_kernel(self) -> bool:
+
+        return self._state == RuntimeState.LOADING_KERNEL
+
+    def is_loading_services(self) -> bool:
+
+        return self._state == RuntimeState.LOADING_SERVICES
+
+    def is_loading_labs(self) -> bool:
+
+        return self._state == RuntimeState.LOADING_LABS
+
     def is_ready(self) -> bool:
+
         return self._state == RuntimeState.READY
 
     def is_running(self) -> bool:
+
         return self._state == RuntimeState.RUNNING
 
+    def is_paused(self) -> bool:
+
+        return self._state == RuntimeState.PAUSED
+
+    def is_stopping(self) -> bool:
+
+        return self._state == RuntimeState.STOPPING
+
+    def is_stopped(self) -> bool:
+
+        return self._state == RuntimeState.STOPPED
+
     def is_failed(self) -> bool:
+
         return self._state == RuntimeState.FAILED
 
+    # ------------------------------------------------------
+
     def reset(self) -> None:
+
         self._state = RuntimeState.CREATED
 
-    def __str__(self) -> str:
+    # ------------------------------------------------------
+
+    def __str__(self):
+
         return self._state.name
 
 
-#
+# ==========================================================
 # Global Runtime State
-#
+# ==========================================================
 
 runtime_state = RuntimeStatus()

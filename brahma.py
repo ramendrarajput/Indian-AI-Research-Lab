@@ -40,6 +40,8 @@ from __future__ import annotations
 import platform
 import sys
 
+from ENGINEERING.CORE.RUNTIME.commands import register_runtime_commands
+from ENGINEERING.CORE.RUNTIME.console import runtime_console
 from ENGINEERING.CORE.RUNTIME.startup import (
     runtime_health,
     startup_runtime,
@@ -174,14 +176,32 @@ def print_welcome():
 
 def main():
 
+    #
+    # Banner
+    #
     print_banner()
 
+    #
+    # Startup Runtime
+    #
     startup_runtime()
 
+    register_runtime_commands()
+
+    #
+    # Runtime Information
+    #
     print_runtime_status()
 
+    #
+    # Welcome Screen
+    #
     print_welcome()
 
+    #
+    # Start Interactive Console
+    #
+    runtime_console.start()
     #
     # Future
     #
@@ -194,44 +214,6 @@ def main():
     # GUI Runtime
     #
     #
-
-    while True:
-
-        try:
-
-            command = input("BRAHMA > ")
-
-            if command.strip().lower() in {
-
-                "exit",
-
-                "quit",
-
-            }:
-
-                print()
-
-                print("Shutting down Project BRAHMA...")
-
-                break
-
-            if command.strip() == "":
-
-                continue
-
-            print(f'Unknown command "{command}"')
-
-            print("Runtime Console coming in v0.3")
-
-        except KeyboardInterrupt:
-
-            print()
-
-            print()
-
-            print("Runtime Interrupted.")
-
-            break
 
     print()
 

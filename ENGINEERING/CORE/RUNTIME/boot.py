@@ -26,7 +26,7 @@ from ENGINEERING.CORE.RUNTIME.logger import (
 )
 from ENGINEERING.CORE.RUNTIME.registry import runtime_registry
 from ENGINEERING.CORE.RUNTIME.state import (
-    RuntimeStage,
+    RuntimeState,
     runtime_state,
 )
 
@@ -44,7 +44,7 @@ def boot_runtime():
     # BOOT START
     # ------------------------------------------------------
 
-    runtime_state.set_stage(RuntimeStage.BOOTING)
+    runtime_state.set(RuntimeState.BOOTING)
 
     boot("Project BRAHMA Runtime Boot Started")
 
@@ -80,7 +80,7 @@ def boot_runtime():
     # Runtime Ready
     # ------------------------------------------------------
 
-    runtime_state.set_stage(RuntimeStage.READY)
+    runtime_state.set(RuntimeState.READY)
 
     runtime("Project BRAHMA Runtime Ready")
 
@@ -100,7 +100,7 @@ def runtime_summary():
         "runtime": runtime_context.runtime_name,
         "version": runtime_context.version,
         "boot_time": runtime_context.boot_time,
-        "state": runtime_state.stage.name,
+        "state": runtime_state.state.name,
         "services": runtime_registry.list_services(),
         "labs": runtime_registry.list_labs(),
         "providers": runtime_registry.list_providers(),
