@@ -28,7 +28,7 @@ from __future__ import annotations
 from typing import Callable
 
 
-#from ENGINEERING.CORE.EVENTBUS.event_type import EventType
+from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 #from ENGINEERING.CORE.EVENTBUS.publisher import EventPublisher
 #class RuntimeDispatcher(EventPublisher):
 class RuntimeDispatcher:
