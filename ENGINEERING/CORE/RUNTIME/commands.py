@@ -121,6 +121,21 @@ def cmd_status():
 
     print()
 
+# ==========================================================
+# Events
+# ==========================================================
+
+def cmd_events():
+
+    print()
+
+    print("Events")
+
+    print("----------------------------")
+
+    print("Event command not implemented yet.")
+
+    print()
 
 # ==========================================================
 # Laboratories
@@ -219,3 +234,4 @@ def register_runtime_commands():
     runtime_dispatcher.register("clear", cmd_clear)
     runtime_dispatcher.register("exit", cmd_exit)
     runtime_dispatcher.register("quit", cmd_exit)
+    runtime_dispatcher.register("events", cmd_events)
