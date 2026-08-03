@@ -47,3 +47,6 @@ env/
 # Streamlit
 .streamlit/secrets.toml
 brahma_old.py
+
+# Documents
+README0.md
