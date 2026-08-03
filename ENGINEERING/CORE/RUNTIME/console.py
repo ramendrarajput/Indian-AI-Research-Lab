@@ -34,8 +34,11 @@ from __future__ import annotations
 from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
 from ENGINEERING.CORE.RUNTIME.logger import runtime
 
+from ENGINEERING.CORE.EVENTBUS.publisher import EventPublisher
+from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 
-class RuntimeConsole:
+class RuntimeConsole(EventPublisher):
+#class RuntimeConsole:
     """
     Thin Runtime Console.
 
@@ -44,6 +47,8 @@ class RuntimeConsole:
     """
 
     def __init__(self):
+
+        super().__init__("runtime.console")
 
         self.running = True
 
@@ -78,8 +83,20 @@ class RuntimeConsole:
                 self.shutdown()
 
     # =====================================================
-
+    
     def execute(self, command: str):
+
+        self.publish(
+
+        EventType.COMMAND_RECEIVED,
+
+        payload={
+
+            "command": command,
+
+        },
+
+    )
 
         runtime_dispatcher.dispatch(command)
 

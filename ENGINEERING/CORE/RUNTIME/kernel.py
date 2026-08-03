@@ -32,6 +32,8 @@ Future Responsibilities
 
 from __future__ import annotations
 
+from ENGINEERING.CORE.EVENTBUS.publisher import EventPublisher
+from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 from ENGINEERING.CORE.RUNTIME.context import runtime_context
 from ENGINEERING.CORE.RUNTIME.logger import kernel
 from ENGINEERING.CORE.RUNTIME.state import (
@@ -44,7 +46,7 @@ from ENGINEERING.CORE.RUNTIME.state import (
 # Runtime Kernel
 # ==========================================================
 
-class RuntimeKernel:
+class RuntimeKernel(EventPublisher):
     """
     Universal Runtime Kernel.
 
@@ -52,7 +54,14 @@ class RuntimeKernel:
     """
 
     def __init__(self):
-        pass
+
+        super().__init__("runtime.kernel")
+
+        #kernel("Initializing Runtime Kernel...")
+
+        #runtime_state.set(RuntimeState.INITIALIZING)
+
+        #kernel("Runtime Kernel Initialized.")
 
     # ======================================================
 
@@ -68,6 +77,10 @@ class RuntimeKernel:
 
         kernel("Loading Runtime Kernel...")
 
+        self.publish(
+        EventType.KERNEL_START,
+        )
+        
         #
         # Future
         #
@@ -80,6 +93,9 @@ class RuntimeKernel:
         runtime_state.set(RuntimeState.RUNNING)
 
         kernel("Runtime Kernel Started.")
+        self.publish(
+           EventType.KERNEL_READY,
+     )
 
     # ======================================================
 
@@ -95,6 +111,9 @@ class RuntimeKernel:
 
         kernel("Stopping Runtime Kernel...")
 
+        self.publish(
+           EventType.RUNTIME_STOP,
+        )
         #
         # Future
         #
@@ -107,12 +126,19 @@ class RuntimeKernel:
         runtime_state.set(RuntimeState.STOPPED)
 
         kernel("Runtime Kernel Stopped.")
+        self.publish(
+            EventType.KERNEL_STOP,
+        )
 
     # ======================================================
 
     def restart(self):
 
         kernel("Restarting Runtime Kernel...")
+
+        self.publish(
+        EventType.RUNTIME_RESTART,
+       )
 
         self.stop()
 
@@ -139,6 +165,12 @@ class RuntimeKernel:
     def fail(self):
 
         runtime_state.set(RuntimeState.FAILED)
+
+        runtime_state.set(RuntimeState.FAILED)
+
+        self.publish(
+        EventType.RUNTIME_ERROR,
+     )
 
         kernel("Runtime Failure Detected.")
 

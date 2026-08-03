@@ -28,12 +28,18 @@ from __future__ import annotations
 from typing import Callable
 
 
+#from ENGINEERING.CORE.EVENTBUS.event_type import EventType
+#from ENGINEERING.CORE.EVENTBUS.publisher import EventPublisher
+#class RuntimeDispatcher(EventPublisher):
 class RuntimeDispatcher:
     """
     Universal Runtime Dispatcher.
     """
 
+
     def __init__(self):
+
+        #super().__init__("runtime.dispatcher")
 
         self._commands: dict[str, Callable] = {}
 
@@ -73,6 +79,18 @@ class RuntimeDispatcher:
         handler = self._commands.get(command)
 
         if handler is None:
+
+            #self.publish(
+
+            #    EventType.UNKNOWN_COMMAND,
+     
+            #    payload={
+
+            #      "command": command,
+
+            #    },
+
+            #)
 
             return self.unknown(command)
 

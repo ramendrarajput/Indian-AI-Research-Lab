@@ -85,6 +85,10 @@ class RuntimeContext:
 
     environment: Any = None
 
+    event_bus: Any = None
+
+    event_history: Any = None
+
     # -------------------------------------------------------
     # Future Runtime Objects
     # -------------------------------------------------------

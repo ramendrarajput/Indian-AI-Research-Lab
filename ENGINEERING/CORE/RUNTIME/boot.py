@@ -19,6 +19,9 @@ Responsibilities
 
 from __future__ import annotations
 
+from ENGINEERING.CORE.EVENTBUS.event import Event
+from ENGINEERING.CORE.EVENTBUS.event_bus import runtime_event_bus
+from ENGINEERING.CORE.EVENTBUS.history import runtime_event_history
 from ENGINEERING.CORE.RUNTIME.context import runtime_context
 from ENGINEERING.CORE.RUNTIME.logger import (
     boot,
@@ -29,8 +32,12 @@ from ENGINEERING.CORE.RUNTIME.state import (
     RuntimeState,
     runtime_state,
 )
-
-
+from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
+from ENGINEERING.CORE.EVENTBUS.logging_handler import register_logging_handler
+from ENGINEERING.CORE.EVENTBUS.logging_handler import (
+    register_logging_handler,
+)
+from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 # ==========================================================
 # Runtime Boot
 # ==========================================================
@@ -47,6 +54,18 @@ def boot_runtime():
     runtime_state.set(RuntimeState.BOOTING)
 
     boot("Project BRAHMA Runtime Boot Started")
+
+    runtime_event_bus.publish(
+
+        Event(
+
+            event_type=EventType.RUNTIME_BOOT.value,
+
+            source="runtime.boot",
+
+        )
+
+    )
 
     # ------------------------------------------------------
     # Register Core Services
@@ -72,7 +91,39 @@ def boot_runtime():
         runtime_registry,
     )
 
+    runtime_registry.register_service(
+    "event_bus",
+    runtime_event_bus,
+    )
+
+    runtime_registry.register_service(
+    "event_history",
+    runtime_event_history,
+   )
+
     runtime_context.registry = runtime_registry
+    runtime_context.event_bus = runtime_event_bus
+    runtime_context.event_history = runtime_event_history
+
+    runtime_kernel.attach_bus(
+        runtime_event_bus,
+    )
+
+    from ENGINEERING.CORE.RUNTIME.console import runtime_console
+
+    runtime_console.attach_bus(
+    runtime_event_bus,
+    )
+
+    #from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
+
+    #runtime_dispatcher.attach_bus(
+    #runtime_event_bus,
+    #)
+
+    register_logging_handler(
+    runtime_event_bus,
+    )
 
     boot("Core Runtime Services Registered")
 
@@ -83,6 +134,18 @@ def boot_runtime():
     runtime_state.set(RuntimeState.READY)
 
     runtime("Project BRAHMA Runtime Ready")
+    
+    runtime_event_bus.publish(
+
+    Event(
+
+        event_type=EventType.RUNTIME_READY.value,
+
+        source="runtime.boot",
+
+      )
+
+  )
 
     return runtime_context
 
@@ -104,4 +167,6 @@ def runtime_summary():
         "services": runtime_registry.list_services(),
         "labs": runtime_registry.list_labs(),
         "providers": runtime_registry.list_providers(),
+        "event_bus": runtime_event_bus.summary(),
+        "event_history": runtime_event_history.summary(),
     }
