@@ -118,6 +118,9 @@ class EventBus:
         #
 
         self._history.append(event)
+        from ENGINEERING.CORE.EVENTBUS.history import runtime_event_history
+
+        runtime_event_history.add(event)
 
         #
         # Notify subscribers
@@ -157,22 +160,68 @@ class EventBus:
 
     def summary(self):
 
+        event_counts = {}
+
+        source_counts = {}
+
+        for event in self._history:
+
+            event_counts[event.event_type] = (
+                event_counts.get(event.event_type, 0) + 1
+            )
+
+            source_counts[event.source] = (
+                source_counts.get(event.source, 0) + 1
+            )
+
         return {
 
-            "registered_events": len(
-                self._subscribers
-            ),
+            "registered_events": len(self._subscribers),
 
-            "history_size": len(
-                self._history
-            ),
+            "history_size": len(self._history),
 
             "subscriber_count": sum(
                 len(x)
                 for x in self._subscribers.values()
             ),
 
+            "event_counts": event_counts,
+
+            "source_counts": source_counts,
+
         }
+
+
+    # ==========================================================
+    # Statistics
+    # ==========================================================
+
+    def statistics(self):
+     """
+     Detailed Event Bus statistics.
+     """
+
+     return {
+
+        "published_events":
+            self._statistics["published_events"],
+
+        "events_by_type":
+            dict(self._statistics["events_by_type"]),
+
+        "events_by_source":
+            dict(self._statistics["events_by_source"]),
+
+        "registered_events":
+            len(self._subscribers),
+
+        "subscriber_count":
+            sum(
+                len(v)
+                for v in self._subscribers.values()
+            ),
+
+    }
 
     # ==========================================================
     # Representation

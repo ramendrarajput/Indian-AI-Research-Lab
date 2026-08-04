@@ -40,8 +40,6 @@ from ENGINEERING.CORE.RUNTIME.state import (
     RuntimeState,
     runtime_state,
 )
-
-
 # ==========================================================
 # Runtime Kernel
 # ==========================================================
@@ -56,12 +54,6 @@ class RuntimeKernel(EventPublisher):
     def __init__(self):
 
         super().__init__("runtime.kernel")
-
-        #kernel("Initializing Runtime Kernel...")
-
-        #runtime_state.set(RuntimeState.INITIALIZING)
-
-        #kernel("Runtime Kernel Initialized.")
 
     # ======================================================
 
@@ -201,10 +193,7 @@ class RuntimeKernel(EventPublisher):
             else {},
 
         }
-
-
 #
 # Global Runtime Kernel
 #
-
 runtime_kernel = RuntimeKernel()

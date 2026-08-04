@@ -29,8 +29,7 @@ from typing import Callable
 
 
 from ENGINEERING.CORE.EVENTBUS.event_type import EventType
-#from ENGINEERING.CORE.EVENTBUS.publisher import EventPublisher
-#class RuntimeDispatcher(EventPublisher):
+
 class RuntimeDispatcher:
     """
     Universal Runtime Dispatcher.
@@ -80,21 +79,10 @@ class RuntimeDispatcher:
 
         if handler is None:
 
-            #self.publish(
+            return False #self.unknown(command)
 
-            #    EventType.UNKNOWN_COMMAND,
-     
-            #    payload={
-
-            #      "command": command,
-
-            #    },
-
-            #)
-
-            return self.unknown(command)
-
-        return handler(*args, **kwargs)
+        handler(*args, **kwargs)
+        return True
 
     # --------------------------------------------------
 

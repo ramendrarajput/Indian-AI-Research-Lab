@@ -95,17 +95,17 @@ will begin its execution from this runtime.
     # --------------------------------------------------
 
     st.markdown(
-            """
-    ### Runtime Pipeline
+        """
+### Runtime Pipeline
 
-    ```text
-    Boot
-        
-            ↓
+```text
+Boot
 
-    Runtime Initialization
+        ↓
 
-            ↓
+Runtime Initialization
+
+        ↓
 
 Kernel Loading
 
@@ -128,3 +128,20 @@ Universal Agent
         ↓
 
 BRAHMA Home
+
+```"""
+    )
+
+    st.divider()
+
+    st.info(
+        """
+"""
+)
+    st.divider()
+
+st.success(
+    "🚀 Runtime startup completed successfully.\n\n"
+    "Universal Runtime is ready for the next implementation phase."
+)
+    

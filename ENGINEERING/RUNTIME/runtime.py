@@ -30,6 +30,9 @@ Author:
 from __future__ import annotations
 
 from typing import Any
+from venv import logger
+
+from ENGINEERING.CORE.RUNTIME.logger import runtime
 
 from .runtime_kernel import RuntimeKernel
 from ..AGENTS.ORCHESTRATION.orchestrator import Orchestrator
@@ -92,8 +95,8 @@ class Runtime:
         """
         Shutdown Runtime.
         """
-
         self.kernel.stop()
+        runtime("Project BRAHMA Runtime Shutdown Complete.")
 
     # =========================================================================
     # Agent Registration
@@ -176,3 +179,9 @@ class Runtime:
             f"ready={self.is_ready}, "
             f"running={self.is_running})"
         )
+
+#
+# Global Runtime
+#
+runtime_instance = Runtime()
+

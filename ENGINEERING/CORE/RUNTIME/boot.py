@@ -37,7 +37,9 @@ from ENGINEERING.CORE.EVENTBUS.logging_handler import register_logging_handler
 from ENGINEERING.CORE.EVENTBUS.logging_handler import (
     register_logging_handler,
 )
+from ENGINEERING.CORE.RUNTIME.console import runtime_console
 from ENGINEERING.CORE.EVENTBUS.event_type import EventType
+
 # ==========================================================
 # Runtime Boot
 # ==========================================================
@@ -109,17 +111,9 @@ def boot_runtime():
         runtime_event_bus,
     )
 
-    from ENGINEERING.CORE.RUNTIME.console import runtime_console
-
     runtime_console.attach_bus(
     runtime_event_bus,
     )
-
-    #from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
-
-    #runtime_dispatcher.attach_bus(
-    #runtime_event_bus,
-    #)
 
     register_logging_handler(
     runtime_event_bus,
@@ -146,7 +140,6 @@ def boot_runtime():
       )
 
   )
-
     return runtime_context
 
 

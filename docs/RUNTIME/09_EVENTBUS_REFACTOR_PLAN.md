@@ -600,3 +600,15 @@ M2 STATUS
 ========================================
 
 🟢 STABLE
+
+09_EVENTBUS_REFACTOR_CHECKLIST.md
+
+PHASE 4
+
+[✓] events
+[ ] events last
+[ ] events clear
+
+M2 Progress
+
+██████████████████████████░ 97%

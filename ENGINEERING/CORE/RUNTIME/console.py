@@ -86,19 +86,21 @@ class RuntimeConsole(EventPublisher):
     
     def execute(self, command: str):
 
-        self.publish(
+        handled = runtime_dispatcher.dispatch(command)
 
-        EventType.COMMAND_RECEIVED,
+        if not handled:
 
-        payload={
+            self.publish(
 
-            "command": command,
+                EventType.UNKNOWN_COMMAND,
 
-        },
+                payload={
+                    "command": command,
+                },
 
-    )
+            )
 
-        runtime_dispatcher.dispatch(command)
+            runtime_dispatcher.unknown(command)
 
     # =====================================================
 

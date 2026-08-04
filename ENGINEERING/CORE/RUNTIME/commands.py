@@ -25,9 +25,14 @@ Commands
 
 from __future__ import annotations
 
+from ENGINEERING.CORE.EVENTBUS.event_type import EventType
+from ENGINEERING.RUNTIME.runtime import runtime_instance
 from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
 from ENGINEERING.CORE.RUNTIME.boot import runtime_summary
-
+from ENGINEERING.CORE.EVENTBUS.history import runtime_event_history
+from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
+from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
+    
 
 # ==========================================================
 # HELP
@@ -127,13 +132,98 @@ def cmd_status():
 
 def cmd_events():
 
+    info = runtime_summary()
+
+    bus = info["event_bus"]
+
     print()
 
-    print("Events")
+    print("Event Bus")
 
     print("----------------------------")
 
-    print("Event command not implemented yet.")
+    print()
+
+    print(f"Published Events : {bus['history_size']}")
+
+    print(f"Registered Types : {bus['registered_events']}")
+
+    print(f"Subscribers      : {bus['subscriber_count']}")
+
+    print()
+
+    print("Event Counts")
+
+    print("----------------------------")
+
+    if not bus["event_counts"]:
+
+        print("No events published.")
+
+    else:
+
+        for event_type, count in bus["event_counts"].items():
+
+            print(f"{event_type:<25} {count}")
+
+    print()
+
+    print("Sources")
+
+    print("----------------------------")
+
+    if not bus["source_counts"]:
+
+        print("No sources.")
+
+    else:
+
+        for source, count in bus["source_counts"].items():
+
+            print(f"{source:<25} {count}")
+
+    print()
+
+# ==========================================================
+# Last events
+# ==========================================================
+
+def cmd_events_last():
+
+    print()
+    print("Last Events")
+    print("----------------------------")
+    print()
+
+    history = runtime_event_history.last()
+
+    if not history:
+
+        print("No events recorded.")
+        print()
+        return
+
+    for event in history:
+
+        print(
+            f"{event.timestamp.strftime('%H:%M:%S')}  "
+            f"{event.source:<20} "
+            f"{event.event_type}"
+        )
+
+    print()
+
+# ==========================================================
+# Clear events
+# ==========================================================
+
+def cmd_events_clear():
+
+    runtime_event_history.clear()
+
+    print()
+
+    print("Event history cleared.")
 
     print()
 
@@ -206,9 +296,6 @@ def cmd_clear():
 # ==========================================================
 # Exit
 # ==========================================================
-
-from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
-
 def cmd_exit():
 
     print()
@@ -216,7 +303,8 @@ def cmd_exit():
     print()
 
     runtime_kernel.stop()
-
+    runtime_instance.shutdown()
+    
     raise SystemExit
 
 # ==========================================================
@@ -224,7 +312,6 @@ def cmd_exit():
 # ==========================================================
 
 def register_runtime_commands():
-    from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
     runtime_dispatcher.register("help", cmd_help)
     runtime_dispatcher.register("runtime", cmd_runtime)
     runtime_dispatcher.register("status", cmd_status)
@@ -235,3 +322,5 @@ def register_runtime_commands():
     runtime_dispatcher.register("exit", cmd_exit)
     runtime_dispatcher.register("quit", cmd_exit)
     runtime_dispatcher.register("events", cmd_events)
+    runtime_dispatcher.register("events last",cmd_events_last,)
+    runtime_dispatcher.register("events clear",cmd_events_clear,)
