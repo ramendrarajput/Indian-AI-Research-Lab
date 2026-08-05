@@ -39,6 +39,7 @@ from ENGINEERING.CORE.EVENTBUS.logging_handler import (
 )
 from ENGINEERING.CORE.RUNTIME.console import runtime_console
 from ENGINEERING.CORE.EVENTBUS.event_type import EventType
+from ENGINEERING.MEMORY.memory_engine import runtime_memory
 
 # ==========================================================
 # Runtime Boot
@@ -68,6 +69,12 @@ def boot_runtime():
         )
 
     )
+
+    # ------------------------------------------------------
+    # Attach Global Registry to Runtime Context
+    # ------------------------------------------------------
+
+    runtime_context.registry = runtime_registry
 
     # ------------------------------------------------------
     # Register Core Services
@@ -103,7 +110,13 @@ def boot_runtime():
     runtime_event_history,
    )
 
-    runtime_context.registry = runtime_registry
+    runtime_registry.register_service(
+        "memory_engine",
+        runtime_memory,
+       )
+    runtime("Memory Engine Initialized.")
+
+    #runtime_context.registry = runtime_registry
     runtime_context.event_bus = runtime_event_bus
     runtime_context.event_history = runtime_event_history
 

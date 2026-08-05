@@ -33,7 +33,8 @@ from typing import Any
 from venv import logger
 
 from ENGINEERING.CORE.RUNTIME.logger import runtime
-
+from ENGINEERING.MEMORY.memory_engine import runtime_memory
+from ENGINEERING.CORE.RUNTIME.context import runtime_context
 from .runtime_kernel import RuntimeKernel
 from ..AGENTS.ORCHESTRATION.orchestrator import Orchestrator
 
@@ -55,9 +56,9 @@ class Runtime:
 
         self.kernel = RuntimeKernel()
 
-        self.context = None
+        self.context = runtime_context 
 
-        self.orchestrator = Orchestrator()
+        self.context.memory = runtime_memory
 
     # =========================================================================
     # Boot
@@ -180,8 +181,8 @@ class Runtime:
             f"running={self.is_running})"
         )
 
-#
+
 # Global Runtime
-#
+
 runtime_instance = Runtime()
 

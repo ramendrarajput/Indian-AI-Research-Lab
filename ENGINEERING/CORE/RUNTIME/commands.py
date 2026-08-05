@@ -25,6 +25,7 @@ Commands
 
 from __future__ import annotations
 
+from datetime import datetime
 from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 from ENGINEERING.RUNTIME.runtime import runtime_instance
 from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
@@ -52,6 +53,8 @@ def cmd_help():
 
     print("runtime")
 
+    print("services")
+
     print("status")
 
     print("labs")
@@ -60,6 +63,24 @@ def cmd_help():
 
     print("memory")
 
+    print("registry")
+
+    print("context")
+
+    print("scheduler")
+
+    print("plugins")
+
+    print("config")
+
+    print("version")
+
+    print("health")
+
+    print("uptime")
+
+    print("history")
+    
     print("clear")
 
     print("exit")
@@ -101,6 +122,57 @@ def cmd_runtime():
 
     print()
 
+# ==========================================================
+# Services
+# ==========================================================
+
+def cmd_services():
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+    print()
+    print("Services")
+    print("----------------------------")
+    for service in runtime_context.registry.list_services(): #summary():
+        print(f"✓ {service}")
+    print()
+    print("Pending")
+    print("----------------------------")
+
+    pending = [
+
+        "universal_agent",
+
+        "scheduler",
+
+        "laboratory_manager",
+
+        "provider_manager",
+
+        "model_manager",
+
+        "event_bus",
+
+        "event_history",
+
+        "logger",
+
+        "runtime_context",
+
+        "runtime_registry",
+
+        "runtime_state",
+
+        "memory_engine",
+
+    ]
+
+    registered = set(runtime_context.registry.list_services())
+
+    for item in pending:
+
+        if item not in registered:
+
+            print(f"• {item}")
 
 # ==========================================================
 # Runtime Status
@@ -245,6 +317,116 @@ def cmd_labs():
 
     print()
 
+# ==========================================================
+# Scheduler
+# ==========================================================
+
+def cmd_scheduler():
+
+    print()
+
+    print("Scheduler")
+
+    print("----------------------------")
+
+    print()
+
+    print("Scheduler not initialized.")
+
+    print()
+
+    print()
+
+# ==========================================================
+# Plugins
+# ==========================================================
+
+def cmd_plugins():
+
+    print()
+
+    print("Plugins")
+
+    print("----------------------------")
+
+    print()
+
+    print("Plugin Manager not initialized.")
+
+    print()
+
+# ==========================================================
+# Registry
+# ==========================================================
+
+def cmd_registry():
+
+    print()
+
+    print("Registry")
+
+    print("----------------------------")
+
+    print()
+
+    print("Registry Viewer not implemented.")
+
+    print()
+
+# ==========================================================
+# Context
+# ==========================================================
+
+def cmd_context():
+
+    print()
+
+    print("Context")
+
+    print("----------------------------")
+
+    print()
+
+    print("Runtime Context Viewer not implemented.")
+
+    print()
+
+                    
+# ==========================================================
+# History
+# ==========================================================
+
+def cmd_history():
+
+    print()
+
+    print("History")
+
+    print("----------------------------")
+
+    print()
+
+    print("History Viewer not implemented.")
+
+    print()
+
+# ==========================================================
+# Laboratories
+# ==========================================================
+
+def cmd_labs():
+
+    print()
+
+    print("Laboratories")
+
+    print("----------------------------")
+
+    print()
+
+    print("No laboratories registered.")
+
+    print()
 
 # ==========================================================
 # Universal Agent
@@ -308,6 +490,135 @@ def cmd_exit():
     raise SystemExit
 
 # ==========================================================
+# Laboratories
+# ==========================================================
+
+def cmd_labs():
+
+    print()
+
+    print("Laboratories")
+
+    print("----------------------------")
+
+    print()
+
+    print("No laboratories registered.")
+
+    print()
+
+# ==========================================================
+# Version
+# ==========================================================
+
+def cmd_version():
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    print()
+    print("BRAHMA Runtime")
+    print("----------------------------")
+    print()
+
+    print(f"Version      : {runtime_context.version}")
+    print(f"Runtime      : {runtime_context.runtime_name}")
+    print("Mode         : Offline")
+    print("Build        : Development")
+    print("Architecture : Universal Runtime")
+    print()
+    
+# ==========================================================
+# Config
+# ==========================================================
+
+def cmd_config():
+
+    print()
+
+    print("Config")
+
+    print("----------------------------")
+
+    print()
+
+    print("Config is not initialized")
+
+    print()
+
+# ==========================================================
+# Health
+# ==========================================================
+
+def cmd_health():
+
+    print()
+    print("Runtime Health")
+    print("----------------------------")
+    print()
+
+    print("✓ Kernel")
+    print("✓ Event Bus")
+    print("✓ Event History")
+    print("✓ Runtime Registry")
+    print("✓ Runtime Context")
+    print("✓ Logger")
+    print()
+
+    print("Pending")
+    print("----------------------------")
+    print()
+
+    print("○ Memory Engine")
+    print("○ Universal Agent")
+    print("○ Scheduler")
+    print("○ Laboratories")
+    print("○ Provider Manager")
+    print()
+
+# ==========================================================
+# Uptime
+# ==========================================================
+
+def cmd_uptime():
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    uptime = datetime.now() - runtime_context.boot_time
+
+    print()
+    print("Runtime Uptime")
+    print("----------------------------")
+    print()
+
+    print(str(uptime).split(".")[0])
+    print()
+
+# ==========================================================
+# Providers
+# ==========================================================
+
+def cmd_providers():
+
+    print()
+    print("Providers")
+    print("----------------------------")
+    print()
+
+    print("No providers loaded.")
+    print()
+
+    print("Future Providers")
+    print("----------------------------")
+    print()
+
+    print("• OpenAI")
+    print("• Gemini")
+    print("• Anthropic")
+    print("• Ollama")
+    print("• BRAHMA Native")
+    print()    
+
+# ==========================================================
 # Register Runtime Commands
 # ==========================================================
 
@@ -324,3 +635,14 @@ def register_runtime_commands():
     runtime_dispatcher.register("events", cmd_events)
     runtime_dispatcher.register("events last",cmd_events_last,)
     runtime_dispatcher.register("events clear",cmd_events_clear,)
+    runtime_dispatcher.register("services", cmd_services)
+    runtime_dispatcher.register("registry", cmd_registry)
+    runtime_dispatcher.register("context", cmd_context)
+    runtime_dispatcher.register("scheduler", cmd_scheduler)
+    runtime_dispatcher.register("config", cmd_config)
+    runtime_dispatcher.register("version", cmd_version)
+    runtime_dispatcher.register("health", cmd_health)
+    runtime_dispatcher.register("uptime", cmd_uptime)
+    runtime_dispatcher.register("history", cmd_history)
+    runtime_dispatcher.register("plugins", cmd_plugins)
+    runtime_dispatcher.register("providers", cmd_providers)
