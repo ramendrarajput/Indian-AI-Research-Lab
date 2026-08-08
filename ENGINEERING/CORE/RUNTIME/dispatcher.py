@@ -73,17 +73,31 @@ class RuntimeDispatcher:
         **kwargs,
     ):
 
-        command = command.lower()
+        command = command.strip()
 
-        handler = self._commands.get(command)
+        if not command:
+
+            return False
+
+        parts = command.split()
+
+        command_name = parts[0].lower()
+
+        command_args = parts[1:]
+
+        handler = self._commands.get(command_name)
 
         if handler is None:
 
-            return False #self.unknown(command)
+            return False
 
-        handler(*args, **kwargs)
+        handler(
+            *command_args,
+            *args,
+            **kwargs,
+     )
+
         return True
-
     # --------------------------------------------------
 
     def commands(self):

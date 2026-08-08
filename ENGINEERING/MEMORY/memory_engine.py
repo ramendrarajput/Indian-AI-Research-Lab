@@ -24,16 +24,33 @@ Future
 """
 from __future__ import annotations
 
+from ENGINEERING.CORE.RUNTIME.logger import runtime
 from ENGINEERING.MEMORY.working_memory import WorkingMemory
 from ENGINEERING.MEMORY.session_memory import SessionMemory
 from ENGINEERING.MEMORY.memory_record import MemoryRecord
+from ENGINEERING.MEMORY.long_term_memory import LongTermMemory
+from ENGINEERING.MEMORY.memory_type import MemoryType
+from .sqlite_storage import SQLiteMemoryStorage
 
 class MemoryEngine:
     def __init__(self):
 
         self.working = WorkingMemory()
+        self.long_term = LongTermMemory()
 
         self.session = SessionMemory()
+        self.storage = SQLiteMemoryStorage()
+
+        # =====================================================
+        # Load Persistent Long-Term Memory
+        # =====================================================
+
+        records = self.storage.load_all()
+
+        self.long_term.load(records)
+
+        runtime("Long-Term Memory Loaded.")
+    
 
     def remember(
 
@@ -103,6 +120,132 @@ class MemoryEngine:
 
             f"session={self.session.size()})"
 
-        )            
+        )
 
+    # ==========================================================
+    # Store Memory
+    # ==========================================================
+
+    def remember(
+
+        self,
+
+        content: str,
+
+        category: MemoryType = MemoryType.GENERAL,
+
+        source: str = "runtime",
+
+        importance: float = 0.0,
+
+    ):
+
+        record = MemoryRecord(
+
+            category=category,
+
+            source=source,
+
+            content=content,
+
+            importance=importance,
+
+        )
+
+        self.working.add(record)
+
+        return record
+
+    # ==========================================================
+    # Recall Working Memory
+    # ==========================================================
+
+    def recall_working(self):
+
+        return self.working.all()            
+
+    # ==========================================================
+    # Recall Session Memory
+    # ==========================================================
+
+    def recall_session(self):
+
+        return self.session.all()
+
+    # ==========================================================
+    # Recall Long Term Memory
+    # ==========================================================
+
+    def recall_long_term(self):
+
+        return self.long_term.all()
+
+    # ==========================================================
+    # Statistics
+    # ==========================================================
+
+    def statistics(self):
+
+        return {
+
+            "working": self.working.size(),
+
+            "session": self.session.size(),
+
+            "long_term": self.long_term.size(),
+
+        }
+
+    # ==========================================================
+    # Promote Working → Session
+    # ==========================================================
+
+    def promote_working_to_session(self):
+
+        records = self.working.all()
+
+        for record in records:
+
+            self.session.add(record)
+
+        self.working.clear()
+
+    # ==========================================================
+    # Promote Session → Long-Term
+    # ==========================================================
+
+    def promote_session_to_long_term(self):
+
+        records = self.session.all()
+
+        for record in records:
+
+            self.long_term.add(record)
+            
+            self.storage.save(record)
+
+        self.session.clear()
+
+    # ==========================================================
+    # Promote All
+    # ==========================================================
+
+    def consolidate(self):
+
+        self.promote_working_to_session()
+
+        self.promote_session_to_long_term()
+
+    # ==========================================================
+    # Recall
+    # ==========================================================
+
+    def recall(
+        self,
+        query: str,
+    ):
+
+        return self.long_term.recall(query)    
+
+            
 runtime_memory = MemoryEngine()    

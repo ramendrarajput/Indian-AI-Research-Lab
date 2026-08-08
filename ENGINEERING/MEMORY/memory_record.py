@@ -23,34 +23,52 @@ from datetime import datetime
 
 from uuid import uuid4
 
+from ENGINEERING.MEMORY.memory_type import MemoryType
+
 @dataclass(slots=True)
 class MemoryRecord:
 
     uid: str = field(default_factory=lambda: str(uuid4()))
 
-timestamp: datetime = field(default_factory=datetime.now)
+    timestamp: datetime = field(default_factory=datetime.now)
 
-source: str = ""
+    category: MemoryType = MemoryType.GENERAL
 
-memory_type: str = ""
+    source: str = "runtime"
 
-importance: int = 1
+    content: str = ""
 
-tags: list[str] = field(default_factory=list)
+    importance: float = 0.0
 
-payload: dict = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
 
-def __repr__(self):
+    payload: dict = field(default_factory=dict)
 
-    return (
+    metadata: dict = field(default_factory=dict)
 
-        f"MemoryRecord("
+    def __repr__(self):
 
-        f"{self.memory_type}, "
+        return (
 
-        f"{self.source}, "
+            f"MemoryRecord("
 
-        f"{self.timestamp:%H:%M:%S})"
+            f"{self.uid}, "
 
-    )
+            f"{self.timestamp:%H:%M:%S}, "
+
+            f"{self.category}, "
+
+            f"{self.source}, "
+
+            #f"{self.memory_type}, "
+
+            f"{self.importance}, "
+
+            f"{self.tags}, "
+
+            f"{self.payload}, "
+
+            f"{self.metadata})"
+
+        )
 

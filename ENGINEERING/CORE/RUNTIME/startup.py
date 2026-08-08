@@ -38,7 +38,7 @@ from ENGINEERING.CORE.RUNTIME.kernel import (
 )
 
 from ENGINEERING.CORE.RUNTIME.logger import startup
-
+from ENGINEERING.CORE.RUNTIME.runtime_metadata import runtime_metadata
 
 # ==========================================================
 # Runtime Startup
@@ -50,6 +50,18 @@ def startup_runtime():
     """
 
     startup("Starting Project BRAHMA Runtime...")
+
+    # ------------------------------------------------------
+    # Runtime Metadata
+    # ------------------------------------------------------
+
+    previous_boot = runtime_metadata.record_boot()
+
+    if previous_boot:
+
+        startup(
+            f"Previous Runtime Boot: {previous_boot}"
+        )
 
     #
     # Boot Runtime
@@ -80,6 +92,8 @@ def shutdown_runtime():
     startup("Stopping Project BRAHMA Runtime...")
 
     runtime_kernel.stop()
+
+    runtime_metadata.record_shutdown()
 
     startup("Runtime Shutdown Completed.")
 

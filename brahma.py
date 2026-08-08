@@ -40,12 +40,16 @@ from __future__ import annotations
 import platform
 import sys
 
+from datetime import datetime
+
 from ENGINEERING.CORE.RUNTIME.commands import register_runtime_commands
 from ENGINEERING.CORE.RUNTIME.console import runtime_console
 from ENGINEERING.CORE.RUNTIME.startup import (
     runtime_health,
     startup_runtime,
+    shutdown_runtime
 )
+from ENGINEERING.CORE.RUNTIME.runtime_metadata import runtime_metadata
 
 
 # ==========================================================
@@ -79,6 +83,59 @@ def print_banner():
 
     print()
 
+    # ==========================================================
+    # Previous Runtime
+    # ==========================================================
+
+    metadata = runtime_metadata.load()
+
+    last_boot = metadata.get("last_boot")
+    last_shutdown = metadata.get("last_shutdown")
+
+    print()
+
+    print("Last Runtime")
+    print("------------")
+
+    if last_boot:
+
+        try:
+            last_boot_dt = datetime.fromisoformat(last_boot)
+
+            print(
+                f"Last Boot     : "
+                f"{last_boot_dt:%Y-%m-%d %H:%M:%S}"
+            )
+
+        except ValueError:
+
+            print(f"Last Boot     : {last_boot}")
+
+    else:
+
+        print("Last Boot     : Not available")
+
+    if last_shutdown:
+
+        try:
+            last_shutdown_dt = datetime.fromisoformat(
+                last_shutdown
+            )
+
+            print(
+                f"Last Shutdown : "
+                f"{last_shutdown_dt:%Y-%m-%d %H:%M:%S}"
+            )
+
+        except ValueError:
+
+            print(f"Last Shutdown : {last_shutdown}")
+
+    else:
+
+        print("Last Shutdown : Not available")
+
+    print()
 
 # ==========================================================
 # Runtime Information
@@ -210,12 +267,15 @@ def main():
     #
     runtime_console.start()
     #
+    # Shutdown Runtime Console
+    #
+    shutdown_runtime()
+    #
     # Future
     #
     # Universal Console
     #
     # >
-    #
     # ChatGPT Runtime
     #
     # GUI Runtime

@@ -35,8 +35,10 @@ from venv import logger
 from ENGINEERING.CORE.RUNTIME.logger import runtime
 from ENGINEERING.MEMORY.memory_engine import runtime_memory
 from ENGINEERING.CORE.RUNTIME.context import runtime_context
+from ENGINEERING.MEMORY.memory_type import MemoryType
 from .runtime_kernel import RuntimeKernel
 from ..AGENTS.ORCHESTRATION.orchestrator import Orchestrator
+from ENGINEERING.CORE.RUNTIME.runtime_metadata import runtime_metadata
 
 
 # =============================================================================
@@ -97,6 +99,20 @@ class Runtime:
         Shutdown Runtime.
         """
         self.kernel.stop()
+
+        runtime_metadata.record_shutdown()
+
+        self.context.memory.remember(
+
+        content="Project BRAHMA Runtime Shutdown.",
+
+        category=MemoryType.SYSTEM,
+
+        source="runtime",
+
+        importance=1.0,
+
+    )
         runtime("Project BRAHMA Runtime Shutdown Complete.")
 
     # =========================================================================

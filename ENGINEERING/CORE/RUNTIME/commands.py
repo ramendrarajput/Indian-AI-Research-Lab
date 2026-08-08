@@ -32,8 +32,7 @@ from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
 from ENGINEERING.CORE.RUNTIME.boot import runtime_summary
 from ENGINEERING.CORE.EVENTBUS.history import runtime_event_history
 from ENGINEERING.CORE.RUNTIME.kernel import runtime_kernel
-from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher
-    
+from ENGINEERING.CORE.RUNTIME.dispatcher import runtime_dispatcher    
 
 # ==========================================================
 # HELP
@@ -78,6 +77,8 @@ def cmd_help():
     print("health")
 
     print("uptime")
+
+    print("consolidate")
 
     print("history")
     
@@ -299,6 +300,23 @@ def cmd_events_clear():
 
     print()
 
+#===========================================================
+#Consolidate
+#===========================================================
+
+def cmd_consolidate():
+
+    #runtime_memory.consolidate()
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    runtime_context.memory.consolidate()
+
+    print()
+
+    print("Memory consolidated.")
+
+    print()
+
 # ==========================================================
 # Laboratories
 # ==========================================================
@@ -390,7 +408,6 @@ def cmd_context():
     print("Runtime Context Viewer not implemented.")
 
     print()
-
                     
 # ==========================================================
 # History
@@ -446,26 +463,93 @@ def cmd_agent():
 
     print()
 
-
 # ==========================================================
 # Memory
 # ==========================================================
 
 def cmd_memory():
 
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    print()
+    print("Memory Engine")
+    print("----------------------------")
     print()
 
-    print("Memory")
+    memory = runtime_context.memory
+
+    if memory is None:
+
+        print("Memory Engine not initialized.")
+        return
+
+    print("Status")
+    print("------")
+    print("READY")
+    print()
+
+    print("Memory Components")
+    print("-----------------")
+
+    print(
+        f"Working Memory   : {memory.working.summary()['records']} records"
+    )
+    print()
+
+    print("Recent Working Memory")
 
     print("----------------------------")
 
+    records = memory.recall_working()
+
+    if not records:
+
+        print("No memories.")
+
+    else:
+
+        for record in records[-5:]:
+
+            print(f"- {record.content}")
+
+    print(
+        f"Session Memory   : {memory.session.summary()['records']} records"
+    )
+
+    print(
+        f"Long-Term Memory : {memory.long_term.summary()['records']} records"
+    )
+
     print()
 
-    print("Memory Engine not initialized.")
+    total = (
+        memory.working.size()
+        + memory.session.size()
+        + memory.long_term.size()
+    )
+
+    print("Statistics")
+    print("----------")
+
+    print(f"Total Records : {total}")
 
     print()
 
+    print("Persistence")
+    print("-----------")
+    print("Disabled")
+    print()
 
+    print("Embeddings")
+    print("----------")
+    print("Disabled")
+    print()
+
+    print("Vector Database")
+    print("---------------")
+    print("Disabled")
+    print()
+    
 # ==========================================================
 # Clear Screen
 # ==========================================================
@@ -474,17 +558,17 @@ def cmd_clear():
 
     print("\n" * 100)
 
-
 # ==========================================================
 # Exit
 # ==========================================================
+
 def cmd_exit():
 
     print()
     print("Stopping Runtime...")
     print()
 
-    runtime_kernel.stop()
+    #runtime_kernel.stop()
     runtime_instance.shutdown()
     
     raise SystemExit
@@ -594,6 +678,67 @@ def cmd_uptime():
     print()
 
 # ==========================================================
+# Recall Memory
+# ==========================================================
+
+def cmd_recall(query: str = ""):
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    print()
+    print("Memory Recall")
+    print("----------------------------")
+    print()
+
+    if not query:
+
+        print("Usage:")
+        print("recall <query>")
+        print()
+
+        return
+
+    memory_engine = runtime_context.memory
+
+    if memory_engine is None:
+
+        print("Memory Engine not initialized.")
+        print()
+
+        return
+
+    records = memory_engine.recall(query)
+
+    if not records:
+
+        print(f'No memories found for "{query}".')
+        print()
+
+        return
+
+    print(f'Results for "{query}"')
+    print("----------------------------")
+    print()
+
+    for index, record in enumerate(records, start=1):
+
+        print(f"{index}.")
+        print()
+
+        print(f"UID        : {record.uid}")
+        print(f"Timestamp  : {record.timestamp}")
+        print(f"Category   : {record.category}")
+        print(f"Source     : {record.source}")
+        print(f"Importance : {record.importance}")
+        print(f"Content    : {record.content}")
+
+        print()
+
+        print("----------------------------")
+
+    print()
+
+# ==========================================================
 # Providers
 # ==========================================================
 
@@ -629,6 +774,7 @@ def register_runtime_commands():
     runtime_dispatcher.register("labs", cmd_labs)
     runtime_dispatcher.register("agent", cmd_agent)
     runtime_dispatcher.register("memory", cmd_memory)
+    runtime_dispatcher.register("recall", cmd_recall)
     runtime_dispatcher.register("clear", cmd_clear)
     runtime_dispatcher.register("exit", cmd_exit)
     runtime_dispatcher.register("quit", cmd_exit)
@@ -646,3 +792,4 @@ def register_runtime_commands():
     runtime_dispatcher.register("history", cmd_history)
     runtime_dispatcher.register("plugins", cmd_plugins)
     runtime_dispatcher.register("providers", cmd_providers)
+    runtime_dispatcher.register("consolidate",cmd_consolidate,)

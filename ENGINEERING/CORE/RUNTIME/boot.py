@@ -40,6 +40,7 @@ from ENGINEERING.CORE.EVENTBUS.logging_handler import (
 from ENGINEERING.CORE.RUNTIME.console import runtime_console
 from ENGINEERING.CORE.EVENTBUS.event_type import EventType
 from ENGINEERING.MEMORY.memory_engine import runtime_memory
+from ENGINEERING.MEMORY.memory_type import MemoryType
 
 # ==========================================================
 # Runtime Boot
@@ -141,6 +142,18 @@ def boot_runtime():
     runtime_state.set(RuntimeState.READY)
 
     runtime("Project BRAHMA Runtime Ready")
+
+    runtime_context.memory.remember(
+
+        content="Project BRAHMA Runtime Boot Completed.",
+
+        category=MemoryType.SYSTEM,
+
+        source="runtime",
+
+        importance=1.0,
+
+    )
     
     runtime_event_bus.publish(
 
