@@ -1,24 +1,12 @@
-# PROJECT BRAHMA HISTORY
+# PROJECT BRAHMA
 
-Document ID
------------
-0002
+# 0002 — FIRST INTERACTIVE RUNTIME CONSOLE
 
-Title
------
-First Interactive Runtime Console
-
-Date
-----
-02 August 2026
-
-Milestone
----------
-M1.1 — Interactive Runtime Console Operational
-
-Author
-------
-Ramendra Singh Rajput
+**Milestone:** M1 — Runtime Foundation
+**Phase:** M1.1 — Interactive Runtime Console Operational
+**Status:** VERIFIED
+**Date:** 02 August 2026
+**Author:** Ramendra Singh Rajput
 
 ---
 

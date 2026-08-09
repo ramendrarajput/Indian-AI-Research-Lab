@@ -12,77 +12,165 @@ Central Memory Manager of Project BRAHMA.
 
 Coordinates all Runtime Memories.
 
+Memory Lifecycle
+----------------
+Working Memory
+      ↓
+Session Memory
+      ↓
+Long-Term Memory
+      ↓
+Persistent Storage
+
 Future
 ------
-• Working Memory
-• Session Memory
-• Long-Term Memory
 • Vector Memory
-• Knowledge Base
 • Semantic Recall
+• Knowledge Base
 • Reflection
+• Learning
 """
+
 from __future__ import annotations
 
 from ENGINEERING.CORE.RUNTIME.logger import runtime
+
 from ENGINEERING.MEMORY.working_memory import WorkingMemory
 from ENGINEERING.MEMORY.session_memory import SessionMemory
-from ENGINEERING.MEMORY.memory_record import MemoryRecord
 from ENGINEERING.MEMORY.long_term_memory import LongTermMemory
+from ENGINEERING.MEMORY.memory_record import MemoryRecord
 from ENGINEERING.MEMORY.memory_type import MemoryType
-from .sqlite_storage import SQLiteMemoryStorage
+
 
 class MemoryEngine:
+    """
+    Central coordinator of the BRAHMA Memory System.
+
+    MemoryEngine does not directly own the persistent
+    storage backend.
+
+    LongTermMemory owns persistent memory storage.
+
+    Memory lifecycle:
+
+        remember()
+            ↓
+        Working Memory
+            ↓
+        Session Memory
+            ↓
+        Long-Term Memory
+            ↓
+        Persistent Storage
+    """
+
+    # ==========================================================
+    # Initialization
+    # ==========================================================
+
     def __init__(self):
 
         self.working = WorkingMemory()
-        self.long_term = LongTermMemory()
 
         self.session = SessionMemory()
-        self.storage = SQLiteMemoryStorage()
 
-        # =====================================================
+        self.long_term = LongTermMemory()
+
+        # ------------------------------------------------------
         # Load Persistent Long-Term Memory
-        # =====================================================
+        # ------------------------------------------------------
 
-        records = self.storage.load_all()
+        records = self.long_term.storage.load_all()
 
         self.long_term.load(records)
 
         runtime("Long-Term Memory Loaded.")
-    
+
+    # ==========================================================
+    # Remember
+    # ==========================================================
 
     def remember(
-
         self,
+        content: str | MemoryRecord,
+        category: MemoryType = MemoryType.GENERAL,
+        source: str = "runtime",
+        importance: float = 0.0,
+    ) -> MemoryRecord:
+        """
+        Create or register a new memory.
 
-        record: MemoryRecord,
+        A new memory enters Working Memory first.
 
-    ):
+        MemoryRecord instances are accepted directly so existing
+        Runtime integrations remain compatible.
+        """
+
+        # ------------------------------------------------------
+        # Existing MemoryRecord
+        # ------------------------------------------------------
+
+        if isinstance(content, MemoryRecord):
+
+            record = content
+
+        # ------------------------------------------------------
+        # Create New MemoryRecord
+        # ------------------------------------------------------
+
+        elif isinstance(content, str):
+
+            record = MemoryRecord(
+
+                category=category,
+
+                source=source,
+
+                content=content,
+
+                importance=importance,
+
+            )
+
+        else:
+
+            raise TypeError(
+                "content must be a str or MemoryRecord"
+            )
+
+        # ------------------------------------------------------
+        # Working Memory
+        # ------------------------------------------------------
 
         self.working.add(record)
 
-        self.session.add(record)
+        return record
+
+    # ==========================================================
+    # Recent Working Memory
+    # ==========================================================
 
     def recent(
-
         self,
-
         count: int = 10,
-
     ):
 
         return self.working.recent(count)
 
+    # ==========================================================
+    # Recent Session Memory
+    # ==========================================================
+
     def session_recent(
-
         self,
-
         count: int = 10,
-
     ):
 
-        return self.session.recent(count)        
+        return self.session.recent(count)
+
+    # ==========================================================
+    # Memory Summary
+    # ==========================================================
 
     def summary(self):
 
@@ -92,23 +180,41 @@ class MemoryEngine:
 
             "session": self.session.size(),
 
+            "long_term": self.long_term.size(),
+
             "session_id": self.session.session_id,
- 
+
         }
+
+    # ==========================================================
+    # Clear Working Memory
+    # ==========================================================
 
     def clear_working(self):
 
         self.working.clear()
 
+    # ==========================================================
+    # Clear Session Memory
+    # ==========================================================
+
     def clear_session(self):
 
         self.session.clear()
+
+    # ==========================================================
+    # Clear Runtime Memory
+    # ==========================================================
 
     def clear(self):
 
         self.clear_working()
 
         self.clear_session()
+
+    # ==========================================================
+    # Representation
+    # ==========================================================
 
     def __repr__(self):
 
@@ -118,43 +224,11 @@ class MemoryEngine:
 
             f"working={self.working.size()}, "
 
-            f"session={self.session.size()})"
+            f"session={self.session.size()}, "
+
+            f"long_term={self.long_term.size()})"
 
         )
-
-    # ==========================================================
-    # Store Memory
-    # ==========================================================
-
-    def remember(
-
-        self,
-
-        content: str,
-
-        category: MemoryType = MemoryType.GENERAL,
-
-        source: str = "runtime",
-
-        importance: float = 0.0,
-
-    ):
-
-        record = MemoryRecord(
-
-            category=category,
-
-            source=source,
-
-            content=content,
-
-            importance=importance,
-
-        )
-
-        self.working.add(record)
-
-        return record
 
     # ==========================================================
     # Recall Working Memory
@@ -162,7 +236,7 @@ class MemoryEngine:
 
     def recall_working(self):
 
-        return self.working.all()            
+        return self.working.all()
 
     # ==========================================================
     # Recall Session Memory
@@ -173,7 +247,7 @@ class MemoryEngine:
         return self.session.all()
 
     # ==========================================================
-    # Recall Long Term Memory
+    # Recall Long-Term Memory
     # ==========================================================
 
     def recall_long_term(self):
@@ -200,9 +274,7 @@ class MemoryEngine:
         uid: str,
     ):
 
-        records = self.long_term.all()
-
-        for record in records:
+        for record in self.long_term.all():
 
             if record.uid == uid:
 
@@ -251,23 +323,32 @@ class MemoryEngine:
         for record in records:
 
             self.long_term.add(record)
-            
-            self.storage.save(record)
 
         self.session.clear()
 
     # ==========================================================
-    # Promote All
+    # Consolidate Memory
     # ==========================================================
 
     def consolidate(self):
+        """
+        Complete memory consolidation lifecycle.
+
+        Working
+            ↓
+        Session
+            ↓
+        Long-Term
+            ↓
+        Persistent Storage
+        """
 
         self.promote_working_to_session()
 
         self.promote_session_to_long_term()
 
     # ==========================================================
-    # Recall
+    # Recall Long-Term Memory
     # ==========================================================
 
     def recall(
@@ -275,7 +356,11 @@ class MemoryEngine:
         query: str,
     ):
 
-        return self.long_term.recall(query)    
+        return self.long_term.recall(query)
 
-            
-runtime_memory = MemoryEngine()    
+
+# ==============================================================
+# Global Runtime Memory Engine
+# ==============================================================
+
+runtime_memory = MemoryEngine()

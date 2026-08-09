@@ -2,26 +2,57 @@
 PROJECT BRAHMA
 
 SQLite Memory Storage
+
+Persistent storage backend for the Universal Memory Engine.
 """
 
 from __future__ import annotations
+
+import json
 import sqlite3
+
+from datetime import datetime
 from pathlib import Path
 
+from ENGINEERING.MEMORY.memory_record import MemoryRecord
 from ENGINEERING.MEMORY.memory_type import MemoryType
+
 from .storage import MemoryStorage
-import json
-from .memory_record import MemoryRecord
-from datetime import datetime
 
 
 class SQLiteMemoryStorage(MemoryStorage):
+    """
+    SQLite-backed persistent memory storage.
 
-    def __init__(self):
+    Responsibilities
+    ----------------
+    • Create the memory database.
+    • Persist MemoryRecord objects.
+    • Load persistent memories.
+    • Search persistent memories.
+    • Replace existing records using UID.
+    • Provide controlled database cleanup.
 
-        self.database = Path("memory.db")
+    The storage layer knows nothing about Working Memory,
+    Session Memory, or Runtime lifecycle.
 
-        self.connection = sqlite3.connect(self.database)
+    It only manages persistence.
+    """
+
+    # ==========================================================
+    # Initialization
+    # ==========================================================
+
+    def __init__(
+        self,
+        database: str | Path = "memory.db",
+    ):
+
+        self.database = Path(database)
+
+        self.connection = sqlite3.connect(
+            self.database
+        )
 
         self.connection.row_factory = sqlite3.Row
 
@@ -29,13 +60,30 @@ class SQLiteMemoryStorage(MemoryStorage):
 
         self._create_tables()
 
+    # ==========================================================
+    # Save / Insert / Replace
+    # ==========================================================
+
     def save(
         self,
         record: MemoryRecord,
-    ):
+    ) -> None:
+        """
+        Persist a MemoryRecord.
+
+        UID is the primary identity of a memory.
+
+        If the UID already exists, the existing database
+        record is replaced.
+        """
+
+        if not isinstance(record, MemoryRecord):
+
+            raise TypeError(
+                "record must be a MemoryRecord"
+            )
 
         self.cursor.execute(
-
             """
             INSERT OR REPLACE INTO memories(
 
@@ -53,39 +101,38 @@ class SQLiteMemoryStorage(MemoryStorage):
 
             VALUES(
 
-                ?,?,?,?,?,?,?,?,?
+                ?, ?, ?, ?, ?, ?, ?, ?, ?
 
             )
-
             """,
-
             (
-
                 record.uid,
-
                 record.timestamp.isoformat(),
-
-                record.category,
-
+                record.category.value
+                if isinstance(record.category, MemoryType)
+                else str(record.category),
                 record.source,
-
                 record.content,
-
                 record.importance,
-
                 json.dumps(record.tags),
-
                 json.dumps(record.payload),
-
                 json.dumps(record.metadata),
-
             ),
-
         )
 
         self.connection.commit()
 
-    def load_all(self):
+    # ==========================================================
+    # Load All Memories
+    # ==========================================================
+
+    def load_all(self) -> list[MemoryRecord]:
+        """
+        Load all persistent memories.
+
+        Important memories are returned first,
+        followed by newer memories.
+        """
 
         rows = self.cursor.execute(
             """
@@ -95,252 +142,10 @@ class SQLiteMemoryStorage(MemoryStorage):
             """
         ).fetchall()
 
-        memories = []
-
-        for row in rows:
-
-            memories.append(
-                MemoryRecord(
-                    uid=row["uid"],
-                    timestamp=datetime.fromisoformat(row["timestamp"]),
-                    category=MemoryType(row["category"]),
-                    source=row["source"],
-                    content=row["content"],
-                    importance=row["importance"],
-                    tags=json.loads(row["tags"] or "[]"),
-                    payload=json.loads(row["payload"] or "{}"),
-                    metadata=json.loads(row["metadata"] or "{}"),
-                )
-            )
-
-        return memories
-    
-    def clear(self):
-
-        raise NotImplementedError
-
-    # ==========================================================
-    # Search Memory
-    # ==========================================================
-
-    # def search(
-    #     self,
-    #     query: str,
-    # ):
-
-    #     rows = self.cursor.execute(
-
-    #         """
-    #         SELECT *
-
-    #         FROM memories
-
-    #         WHERE
-
-    #             content LIKE ?
-
-    #             OR category LIKE ?
-
-    #             OR source LIKE ?
-
-    #         ORDER BY
-
-    #         importance DESC,
-
-    #         timestamp DESC
-    #         """,
-
-    #         (
-    #             f"%{query}%",
-    #             f"%{query}%",
-    #             f"%{query}%",
-
-    #         ),
-
-    #     ).fetchall()
-
-    #     memories = []
-
-    #     for row in rows:
-
-    #         memories.append(
-
-    #             MemoryRecord(
-
-    #                 uid=row["uid"],
-
-    #                 timestamp=datetime.fromisoformat(row["timestamp"]),
-
-    #                 #category=row["category"],
-    #                 category=MemoryType(row["category"]),
-
-    #                 source=row["source"],
-
-    #                 content=row["content"],
-
-    #                 importance=row["importance"],
-
-    #                 tags=json.loads(row["tags"]),
-
-    #                 payload=json.loads(row["payload"]),
-
-    #                 metadata=json.loads(row["metadata"]),
-
-    #             )
-
-    #         )
-
-    #     return memories
-
-    # ==========================================================
-    # Search Memory
-    # ==========================================================
-
-    # def search(
-    #     self,
-    #     query: str,
-    # ):
-
-    #     query = query.strip().lower()
-
-    #     if not query:
-    #         return []
-
-    #     rows = self.cursor.execute(
-    #         """
-    #         SELECT *
-    #         FROM memories
-    #         """
-    #     ).fetchall()
-
-    #     scored_memories = []
-
-    #     query_tokens = set(query.split())
-
-    #     for row in rows:
-
-    #         content = (row["content"] or "").lower()
-    #         category = (row["category"] or "").lower()
-    #         source = (row["source"] or "").lower()
-
-    #         tags = json.loads(row["tags"] or "[]")
-
-    #         tags = [
-    #             str(tag).lower()
-    #             for tag in tags
-    #         ]
-
-    #         score = 0.0
-
-    #         # --------------------------------------------------
-    #         # Content Match
-    #         # --------------------------------------------------
-
-    #         if query == content:
-    #             score += 100
-
-    #         elif query in content:
-    #             score += 50
-
-    #         # --------------------------------------------------
-    #         # Token Match
-    #         # --------------------------------------------------
-
-    #         content_tokens = set(content.split())
-
-    #         matched_tokens = query_tokens.intersection(
-    #             content_tokens
-    #         )
-
-    #         score += len(matched_tokens) * 10
-
-    #         # --------------------------------------------------
-    #         # Tag Match
-    #         # --------------------------------------------------
-
-    #         for token in query_tokens:
-
-    #             if token in tags:
-    #                 score += 25
-
-    #         # --------------------------------------------------
-    #         # Category Match
-    #         # --------------------------------------------------
-
-    #         if query in category:
-    #             score += 20
-
-    #         # --------------------------------------------------
-    #         # Source Match
-    #         # --------------------------------------------------
-
-    #         if query in source:
-    #             score += 15
-
-    #         # --------------------------------------------------
-    #         # Importance
-    #         # --------------------------------------------------
-
-    #         score += float(row["importance"] or 0)
-
-    #         # --------------------------------------------------
-    #         # Only Relevant Memories
-    #         # --------------------------------------------------
-
-    #         if score <= 0:
-    #             continue
-
-    #         memory = MemoryRecord(
-
-    #             uid=row["uid"],
-
-    #             timestamp=datetime.fromisoformat(
-    #                 row["timestamp"]
-    #             ),
-
-    #             category=MemoryType(row["category"]),
-
-    #             source=row["source"],
-
-    #             content=row["content"],
-
-    #             importance=row["importance"],
-
-    #             tags=json.loads(
-    #                 row["tags"] or "[]"
-    #             ),
-
-    #             payload=json.loads(
-    #                 row["payload"] or "{}"
-    #             ),
-
-    #             metadata=json.loads(
-    #                 row["metadata"] or "{}"
-    #             ),
-
-    #         )
-
-    #         scored_memories.append(
-    #             (score, memory)
-    #         )
-
-    #     # ------------------------------------------------------
-    #     # Rank Memories
-    #     # ------------------------------------------------------
-
-    #     scored_memories.sort(
-    #         key=lambda item: (
-    #             item[0],
-    #             item[1].timestamp,
-    #         ),
-    #         reverse=True,
-    #     )
-
-    #     return [
-    #         memory
-    #         for score, memory
-    #         in scored_memories
-    #     ]
+        return [
+            self._row_to_memory(row)
+            for row in rows
+        ]
 
     # ==========================================================
     # Search Memory
@@ -349,230 +154,160 @@ class SQLiteMemoryStorage(MemoryStorage):
     def search(
         self,
         query: str,
-    ):
+    ) -> list[MemoryRecord]:
+        """
+        Search persistent memories.
 
-        query = query.strip().lower()
+        Current search scope:
+
+        • content
+        • category
+        • source
+
+        Results are ordered by importance and timestamp.
+        """
+
+        query = query.strip()
 
         if not query:
+
             return []
+
+        pattern = f"%{query}%"
 
         rows = self.cursor.execute(
             """
             SELECT *
             FROM memories
-            """
+
+            WHERE
+
+                content LIKE ?
+                OR category LIKE ?
+                OR source LIKE ?
+
+            ORDER BY
+
+                importance DESC,
+                timestamp DESC
+            """,
+            (
+                pattern,
+                pattern,
+                pattern,
+            ),
         ).fetchall()
 
-        scored_memories = []
+        return [
+            self._row_to_memory(row)
+            for row in rows
+        ]
 
-        query_tokens = set(query.split())
+    # ==========================================================
+    # Delete All Memories
+    # ==========================================================
 
-        for row in rows:
+    def clear(self) -> None:
+        """
+        Permanently delete all persistent memories.
 
-            content = (row["content"] or "").lower()
-            category = (row["category"] or "").lower()
-            source = (row["source"] or "").lower()
+        This operation is intentionally explicit.
+        """
 
-            tags = json.loads(
-                row["tags"] or "[]"
-            )
-
-            tags = [
-                str(tag).lower()
-                for tag in tags
-            ]
-
-            content_tokens = set(
-                content.split()
-            )
-
-            # ==================================================
-            # Relevance
-            # ==================================================
-
-            relevant = False
-
-            # Exact content match
-            if query == content:
-
-                relevant = True
-
-            # Query appears inside content
-            elif query in content:
-
-                relevant = True
-
-            # At least one query token appears in content
-            elif query_tokens.intersection(
-                content_tokens
-            ):
-
-                relevant = True
-
-            # Query token appears in tags
-            elif any(
-                token in tags
-                for token in query_tokens
-            ):
-
-                relevant = True
-
-            # Query appears in category
-            elif query in category:
-
-                relevant = True
-
-            # Query appears in source
-            elif query in source:
-
-                relevant = True
-
-            # Ignore completely unrelated memories
-            if not relevant:
-
-                continue
-
-            # ==================================================
-            # Relevance Score
-            # ==================================================
-
-            score = 0.0
-
-            # --------------------------------------------------
-            # Exact Content Match
-            # --------------------------------------------------
-
-            if query == content:
-
-                score += 100
-
-            # --------------------------------------------------
-            # Phrase Match
-            # --------------------------------------------------
-
-            elif query in content:
-
-                score += 50
-
-            # --------------------------------------------------
-            # Token Match
-            # --------------------------------------------------
-
-            matched_tokens = query_tokens.intersection(
-                content_tokens
-            )
-
-            score += (
-                len(matched_tokens) * 10
-            )
-
-            # --------------------------------------------------
-            # Tag Match
-            # --------------------------------------------------
-
-            for token in query_tokens:
-
-                if token in tags:
-
-                    score += 25
-
-            # --------------------------------------------------
-            # Category Match
-            # --------------------------------------------------
-
-            if query in category:
-
-                score += 20
-
-            # --------------------------------------------------
-            # Source Match
-            # --------------------------------------------------
-
-            if query in source:
-
-                score += 15
-
-            # --------------------------------------------------
-            # Importance Bonus
-            # --------------------------------------------------
-
-            score += float(
-                row["importance"] or 0
-            )
-
-            # ==================================================
-            # Build Memory Record
-            # ==================================================
-
-            memory = MemoryRecord(
-
-                uid=row["uid"],
-
-                timestamp=datetime.fromisoformat(
-                    row["timestamp"]
-                ),
-
-                category=MemoryType(
-                    row["category"]
-                ),
-
-                source=row["source"],
-
-                content=row["content"],
-
-                importance=row["importance"],
-
-                tags=json.loads(
-                    row["tags"] or "[]"
-                ),
-
-                payload=json.loads(
-                    row["payload"] or "{}"
-                ),
-
-                metadata=json.loads(
-                    row["metadata"] or "{}"
-                ),
-
-            )
-
-            scored_memories.append(
-                (
-                    score,
-                    memory,
-                )
-            )
-
-        # ======================================================
-        # Rank Memories
-        # ======================================================
-
-        scored_memories.sort(
-
-            key=lambda item: (
-                item[0],
-                item[1].importance,
-                item[1].timestamp,
-            ),
-
-            reverse=True,
+        self.cursor.execute(
+            """
+            DELETE FROM memories
+            """
         )
 
-        # ======================================================
-        # Return Ranked Memories
-        # ======================================================
+        self.connection.commit()
 
-        return [
-            memory
-            for score, memory
-            in scored_memories
-        ]
+    # ==========================================================
+    # Close Storage
+    # ==========================================================
+
+    def close(self) -> None:
+        """
+        Close the SQLite connection.
+        """
+
+        if self.connection:
+
+            self.connection.close()
+
+    # ==========================================================
+    # Context Manager
+    # ==========================================================
+
+    def __enter__(self):
+
+        return self
+
+    # ----------------------------------------------------------
+
+    def __exit__(
+        self,
+        exc_type,
+        exc_value,
+        traceback,
+    ):
+
+        self.close()
+
+    # ==========================================================
+    # Row → MemoryRecord
+    # ==========================================================
+
+    @staticmethod
+    def _row_to_memory(
+        row: sqlite3.Row,
+    ) -> MemoryRecord:
+        """
+        Convert a SQLite row into MemoryRecord.
+        """
+
+        return MemoryRecord(
+
+            uid=row["uid"],
+
+            timestamp=datetime.fromisoformat(
+                row["timestamp"]
+            ),
+
+            category=MemoryType(
+                row["category"]
+            ),
+
+            source=row["source"],
+
+            content=row["content"],
+
+            importance=float(
+                row["importance"] or 0.0
+            ),
+
+            tags=json.loads(
+                row["tags"] or "[]"
+            ),
+
+            payload=json.loads(
+                row["payload"] or "{}"
+            ),
+
+            metadata=json.loads(
+                row["metadata"] or "{}"
+            ),
+
+        )
 
     # ==========================================================
     # Create Database
     # ==========================================================
 
-    def _create_tables(self):
+    def _create_tables(self) -> None:
+        """
+        Create the persistent memory table if it does not exist.
+        """
 
         self.cursor.execute(
             """

@@ -1,6 +1,6 @@
 # PROJECT BRAHMA
 
-# 0012 — THE MEMORY THAT LEARNED TO CHANGE
+# 0006 — THE MEMORY THAT LEARNED TO CHANGE
 
 **Milestone:** M3 — Universal Memory Engine
 **Phase:** M3.6 → Persistent Memory Foundation → M3.7
