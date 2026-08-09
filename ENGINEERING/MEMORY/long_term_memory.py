@@ -70,6 +70,27 @@ class LongTermMemory:
 
         }
 
+    # -------------------------------------------------
+    # Update Persistent Memory
+    # -------------------------------------------------
+
+    def update(
+        self,
+        record: MemoryRecord,
+    ):
+
+        for index, existing in enumerate(self._records):
+
+            if existing.uid == record.uid:
+
+                self._records[index] = record
+
+                self.storage.save(record)
+
+                return record
+
+        return None
+
     #-------------------------------------------------
 
     def recall(

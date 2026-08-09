@@ -50,3 +50,8 @@ brahma_old.py
 
 # Documents
 README0.md
+
+# Databases
+memory.db
+runtime_metadata.json
+.runtime_metadata.json

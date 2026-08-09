@@ -181,6 +181,36 @@ class MemoryEngine:
         return self.long_term.all()
 
     # ==========================================================
+    # Update Long-Term Memory
+    # ==========================================================
+
+    def update_memory(
+        self,
+        record: MemoryRecord,
+    ):
+
+        return self.long_term.update(record)
+
+    # ==========================================================
+    # Find Long-Term Memory By UID
+    # ==========================================================
+
+    def get_long_term_by_uid(
+        self,
+        uid: str,
+    ):
+
+        records = self.long_term.all()
+
+        for record in records:
+
+            if record.uid == uid:
+
+                return record
+
+        return None
+
+    # ==========================================================
     # Statistics
     # ==========================================================
 

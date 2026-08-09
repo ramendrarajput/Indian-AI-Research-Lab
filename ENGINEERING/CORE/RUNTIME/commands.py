@@ -464,6 +464,71 @@ def cmd_agent():
     print()
 
 # ==========================================================
+# Memory Update
+# ==========================================================
+
+def cmd_memory_update(
+    uid: str,
+    *content_parts,
+):
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    content = " ".join(content_parts)
+
+    memory_engine = runtime_context.memory
+
+    if memory_engine is None:
+
+        print()
+        print("Memory Engine not initialized.")
+        print()
+
+        return
+
+    record = memory_engine.get_long_term_by_uid(uid)
+
+    if record is None:
+
+        print()
+        print(f'No long-term memory found for UID "{uid}".')
+        print()
+
+        return
+
+    print()
+    print("## Memory Update")
+    print()
+
+    print("Before")
+    print("----------------------------------------------")
+    print("UID        :", record.uid)
+    print("Content    :", record.content)
+    print("Importance :", record.importance)
+    print()
+
+    record.content = content
+
+    updated = memory_engine.update_memory(record)
+
+    if updated is None:
+
+        print("Memory update failed.")
+        print()
+
+        return
+
+    print("After")
+    print("----------------------------------------------")
+    print("UID        :", updated.uid)
+    print("Content    :", updated.content)
+    print("Importance :", updated.importance)
+    print()
+
+    print("Memory updated and persisted.")
+    print()
+
+# ==========================================================
 # Memory
 # ==========================================================
 
@@ -678,6 +743,71 @@ def cmd_uptime():
     print()
 
 # ==========================================================
+# Memory Update
+# ==========================================================
+
+def cmd_memory_update(
+    uid: str,
+    *content_parts,
+):
+
+    from ENGINEERING.CORE.RUNTIME.context import runtime_context
+
+    content = " ".join(content_parts)
+
+    memory_engine = runtime_context.memory
+
+    if memory_engine is None:
+
+        print()
+        print("Memory Engine not initialized.")
+        print()
+
+        return
+
+    record = memory_engine.get_long_term_by_uid(uid)
+
+    if record is None:
+
+        print()
+        print(f'No long-term memory found for UID "{uid}".')
+        print()
+
+        return
+
+    print()
+    print("## Memory Update")
+    print()
+
+    print("Before")
+    print("----------------------------------------------")
+    print(f"UID        : {record.uid}")
+    print(f"Content    : {record.content}")
+    print(f"Importance : {record.importance}")
+    print()
+
+    record.content = content
+
+    updated = memory_engine.update_memory(record)
+
+    if updated is None:
+
+        print("Memory update failed.")
+        print()
+
+        return
+
+    print("After")
+    print("----------------------------------------------")
+    print(f"UID        : {updated.uid}")
+    print(f"Content    : {updated.content}")
+    print(f"Importance : {updated.importance}")
+    print()
+
+    print("Memory updated and persisted.")
+    print()
+    
+# ==========================================================
 # Recall Memory
 # ==========================================================
 
@@ -775,6 +905,7 @@ def register_runtime_commands():
     runtime_dispatcher.register("agent", cmd_agent)
     runtime_dispatcher.register("memory", cmd_memory)
     runtime_dispatcher.register("recall", cmd_recall)
+    runtime_dispatcher.register("memory update", cmd_memory_update)
     runtime_dispatcher.register("clear", cmd_clear)
     runtime_dispatcher.register("exit", cmd_exit)
     runtime_dispatcher.register("quit", cmd_exit)
@@ -793,3 +924,4 @@ def register_runtime_commands():
     runtime_dispatcher.register("plugins", cmd_plugins)
     runtime_dispatcher.register("providers", cmd_providers)
     runtime_dispatcher.register("consolidate",cmd_consolidate,)
+    

@@ -81,23 +81,47 @@ class RuntimeDispatcher:
 
         parts = command.split()
 
-        command_name = parts[0].lower()
+        # --------------------------------------------------
+        # Find longest registered command
+        # --------------------------------------------------
 
-        command_args = parts[1:]
+        handler = None
+        command_name = None
+        command_args = []
 
-        handler = self._commands.get(command_name)
+        for length in range(len(parts), 0, -1):
+
+            candidate = " ".join(parts[:length]).lower()
+
+            handler = self._commands.get(candidate)
+
+            if handler is not None:
+
+                command_name = candidate
+                command_args = parts[length:]
+
+                break
+
+        # --------------------------------------------------
+        # Unknown Command
+        # --------------------------------------------------
 
         if handler is None:
 
             return False
 
+        # --------------------------------------------------
+        # Execute Handler
+        # --------------------------------------------------
+
         handler(
             *command_args,
             *args,
             **kwargs,
-     )
+        )
 
         return True
+    
     # --------------------------------------------------
 
     def commands(self):
