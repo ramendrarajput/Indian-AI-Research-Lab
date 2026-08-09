@@ -123,74 +123,450 @@ class SQLiteMemoryStorage(MemoryStorage):
     # Search Memory
     # ==========================================================
 
+    # def search(
+    #     self,
+    #     query: str,
+    # ):
+
+    #     rows = self.cursor.execute(
+
+    #         """
+    #         SELECT *
+
+    #         FROM memories
+
+    #         WHERE
+
+    #             content LIKE ?
+
+    #             OR category LIKE ?
+
+    #             OR source LIKE ?
+
+    #         ORDER BY
+
+    #         importance DESC,
+
+    #         timestamp DESC
+    #         """,
+
+    #         (
+    #             f"%{query}%",
+    #             f"%{query}%",
+    #             f"%{query}%",
+
+    #         ),
+
+    #     ).fetchall()
+
+    #     memories = []
+
+    #     for row in rows:
+
+    #         memories.append(
+
+    #             MemoryRecord(
+
+    #                 uid=row["uid"],
+
+    #                 timestamp=datetime.fromisoformat(row["timestamp"]),
+
+    #                 #category=row["category"],
+    #                 category=MemoryType(row["category"]),
+
+    #                 source=row["source"],
+
+    #                 content=row["content"],
+
+    #                 importance=row["importance"],
+
+    #                 tags=json.loads(row["tags"]),
+
+    #                 payload=json.loads(row["payload"]),
+
+    #                 metadata=json.loads(row["metadata"]),
+
+    #             )
+
+    #         )
+
+    #     return memories
+
+    # ==========================================================
+    # Search Memory
+    # ==========================================================
+
+    # def search(
+    #     self,
+    #     query: str,
+    # ):
+
+    #     query = query.strip().lower()
+
+    #     if not query:
+    #         return []
+
+    #     rows = self.cursor.execute(
+    #         """
+    #         SELECT *
+    #         FROM memories
+    #         """
+    #     ).fetchall()
+
+    #     scored_memories = []
+
+    #     query_tokens = set(query.split())
+
+    #     for row in rows:
+
+    #         content = (row["content"] or "").lower()
+    #         category = (row["category"] or "").lower()
+    #         source = (row["source"] or "").lower()
+
+    #         tags = json.loads(row["tags"] or "[]")
+
+    #         tags = [
+    #             str(tag).lower()
+    #             for tag in tags
+    #         ]
+
+    #         score = 0.0
+
+    #         # --------------------------------------------------
+    #         # Content Match
+    #         # --------------------------------------------------
+
+    #         if query == content:
+    #             score += 100
+
+    #         elif query in content:
+    #             score += 50
+
+    #         # --------------------------------------------------
+    #         # Token Match
+    #         # --------------------------------------------------
+
+    #         content_tokens = set(content.split())
+
+    #         matched_tokens = query_tokens.intersection(
+    #             content_tokens
+    #         )
+
+    #         score += len(matched_tokens) * 10
+
+    #         # --------------------------------------------------
+    #         # Tag Match
+    #         # --------------------------------------------------
+
+    #         for token in query_tokens:
+
+    #             if token in tags:
+    #                 score += 25
+
+    #         # --------------------------------------------------
+    #         # Category Match
+    #         # --------------------------------------------------
+
+    #         if query in category:
+    #             score += 20
+
+    #         # --------------------------------------------------
+    #         # Source Match
+    #         # --------------------------------------------------
+
+    #         if query in source:
+    #             score += 15
+
+    #         # --------------------------------------------------
+    #         # Importance
+    #         # --------------------------------------------------
+
+    #         score += float(row["importance"] or 0)
+
+    #         # --------------------------------------------------
+    #         # Only Relevant Memories
+    #         # --------------------------------------------------
+
+    #         if score <= 0:
+    #             continue
+
+    #         memory = MemoryRecord(
+
+    #             uid=row["uid"],
+
+    #             timestamp=datetime.fromisoformat(
+    #                 row["timestamp"]
+    #             ),
+
+    #             category=MemoryType(row["category"]),
+
+    #             source=row["source"],
+
+    #             content=row["content"],
+
+    #             importance=row["importance"],
+
+    #             tags=json.loads(
+    #                 row["tags"] or "[]"
+    #             ),
+
+    #             payload=json.loads(
+    #                 row["payload"] or "{}"
+    #             ),
+
+    #             metadata=json.loads(
+    #                 row["metadata"] or "{}"
+    #             ),
+
+    #         )
+
+    #         scored_memories.append(
+    #             (score, memory)
+    #         )
+
+    #     # ------------------------------------------------------
+    #     # Rank Memories
+    #     # ------------------------------------------------------
+
+    #     scored_memories.sort(
+    #         key=lambda item: (
+    #             item[0],
+    #             item[1].timestamp,
+    #         ),
+    #         reverse=True,
+    #     )
+
+    #     return [
+    #         memory
+    #         for score, memory
+    #         in scored_memories
+    #     ]
+
+    # ==========================================================
+    # Search Memory
+    # ==========================================================
+
     def search(
         self,
         query: str,
     ):
 
-        rows = self.cursor.execute(
+        query = query.strip().lower()
 
+        if not query:
+            return []
+
+        rows = self.cursor.execute(
             """
             SELECT *
-
             FROM memories
-
-            WHERE
-
-                content LIKE ?
-
-                OR category LIKE ?
-
-                OR source LIKE ?
-
-            ORDER BY
-
-            importance DESC,
-
-            timestamp DESC
-            """,
-
-            (
-                f"%{query}%",
-                f"%{query}%",
-                f"%{query}%",
-
-            ),
-
+            """
         ).fetchall()
 
-        memories = []
+        scored_memories = []
+
+        query_tokens = set(query.split())
 
         for row in rows:
 
-            memories.append(
+            content = (row["content"] or "").lower()
+            category = (row["category"] or "").lower()
+            source = (row["source"] or "").lower()
 
-                MemoryRecord(
+            tags = json.loads(
+                row["tags"] or "[]"
+            )
 
-                    uid=row["uid"],
+            tags = [
+                str(tag).lower()
+                for tag in tags
+            ]
 
-                    timestamp=datetime.fromisoformat(row["timestamp"]),
+            content_tokens = set(
+                content.split()
+            )
 
-                    #category=row["category"],
-                    category=MemoryType(row["category"]),
+            # ==================================================
+            # Relevance
+            # ==================================================
 
-                    source=row["source"],
+            relevant = False
 
-                    content=row["content"],
+            # Exact content match
+            if query == content:
 
-                    importance=row["importance"],
+                relevant = True
 
-                    tags=json.loads(row["tags"]),
+            # Query appears inside content
+            elif query in content:
 
-                    payload=json.loads(row["payload"]),
+                relevant = True
 
-                    metadata=json.loads(row["metadata"]),
+            # At least one query token appears in content
+            elif query_tokens.intersection(
+                content_tokens
+            ):
 
-                )
+                relevant = True
+
+            # Query token appears in tags
+            elif any(
+                token in tags
+                for token in query_tokens
+            ):
+
+                relevant = True
+
+            # Query appears in category
+            elif query in category:
+
+                relevant = True
+
+            # Query appears in source
+            elif query in source:
+
+                relevant = True
+
+            # Ignore completely unrelated memories
+            if not relevant:
+
+                continue
+
+            # ==================================================
+            # Relevance Score
+            # ==================================================
+
+            score = 0.0
+
+            # --------------------------------------------------
+            # Exact Content Match
+            # --------------------------------------------------
+
+            if query == content:
+
+                score += 100
+
+            # --------------------------------------------------
+            # Phrase Match
+            # --------------------------------------------------
+
+            elif query in content:
+
+                score += 50
+
+            # --------------------------------------------------
+            # Token Match
+            # --------------------------------------------------
+
+            matched_tokens = query_tokens.intersection(
+                content_tokens
+            )
+
+            score += (
+                len(matched_tokens) * 10
+            )
+
+            # --------------------------------------------------
+            # Tag Match
+            # --------------------------------------------------
+
+            for token in query_tokens:
+
+                if token in tags:
+
+                    score += 25
+
+            # --------------------------------------------------
+            # Category Match
+            # --------------------------------------------------
+
+            if query in category:
+
+                score += 20
+
+            # --------------------------------------------------
+            # Source Match
+            # --------------------------------------------------
+
+            if query in source:
+
+                score += 15
+
+            # --------------------------------------------------
+            # Importance Bonus
+            # --------------------------------------------------
+
+            score += float(
+                row["importance"] or 0
+            )
+
+            # ==================================================
+            # Build Memory Record
+            # ==================================================
+
+            memory = MemoryRecord(
+
+                uid=row["uid"],
+
+                timestamp=datetime.fromisoformat(
+                    row["timestamp"]
+                ),
+
+                category=MemoryType(
+                    row["category"]
+                ),
+
+                source=row["source"],
+
+                content=row["content"],
+
+                importance=row["importance"],
+
+                tags=json.loads(
+                    row["tags"] or "[]"
+                ),
+
+                payload=json.loads(
+                    row["payload"] or "{}"
+                ),
+
+                metadata=json.loads(
+                    row["metadata"] or "{}"
+                ),
 
             )
 
-        return memories
+            scored_memories.append(
+                (
+                    score,
+                    memory,
+                )
+            )
+
+        # ======================================================
+        # Rank Memories
+        # ======================================================
+
+        scored_memories.sort(
+
+            key=lambda item: (
+                item[0],
+                item[1].importance,
+                item[1].timestamp,
+            ),
+
+            reverse=True,
+        )
+
+        # ======================================================
+        # Return Ranked Memories
+        # ======================================================
+
+        return [
+            memory
+            for score, memory
+            in scored_memories
+        ]
 
     # ==========================================================
     # Create Database
