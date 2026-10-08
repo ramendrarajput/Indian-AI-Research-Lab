@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Project BRAHMA — Universal Intelligence Architecture</title>
+<meta name="description" content="Project BRAHMA — Indian AI Research Lab. Ek open-source Universal Intelligence Architecture (RAG, ChromaDB, Gemini + Ollama), Gadarwara, Madhya Pradesh se bana raha hai Ramendra Singh Rajput.">
+<link rel="canonical" href="https://ramendrarajput.github.io/Indian-AI-Research-Lab/">
+<meta name="theme-color" content="#0e1233">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Project BRAHMA — Indian AI Research Lab">
+<meta property="og:description" content="Ek chatbot nahi, ek Universal Intelligence Architecture. Open source, India se.">
+<meta property="og:url" content="https://ramendrarajput.github.io/Indian-AI-Research-Lab/">
+<meta property="og:image" content="https://img.youtube.com/vi/oelxxMxQTco/maxresdefault.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230e1233'/%3E%3Ctext x='50' y='70' font-size='62' text-anchor='middle' fill='%23f5b21a'%3E%E0%A5%90%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Devanagari+Hindi&family=Hind:wght@400;500;600&family=Spline+Sans+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4efe6;--bg2:#eae3d5;--ink:#141a45;--mute:#4b5077;--gold:#b87400;--teal:#0d7f74;--line:#141a4522;--card:#fbf8f1;
@@ -69,20 +79,34 @@ th{color:var(--mute);font-weight:600}tr:last-child td{border-bottom:0}
 .stat{text-align:center}.stat h3{font-size:28px;color:var(--gold);margin-bottom:2px}.stat p{margin:0}
 footer{padding:34px 0;border-top:1px solid var(--line);color:var(--mute);font-size:15px;text-align:center}
 @media (max-width:760px){.hero .inner,.who,.mile{grid-template-columns:1fr}nav .wrap{flex-wrap:wrap;height:auto;padding:8px 22px}nav .links{order:3;width:100%}}
+.vid{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0a0e2b}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.soc{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px}
+.soc a,.soc span{font-size:15px}.soc span{color:var(--mute);opacity:.7}
+@media(max-width:720px){nav a.ext.hs{display:none}}
 </style>
 </head>
 <body>
 <nav><div class="wrap">
 <b>ब्रह्मा</b>
 <div class="links" id="navlinks"></div>
-<div class="langsw" id="langsw"><button data-l="hi">हिंदी</button><button data-l="en">English</button></div>
+<div class="langsw" id="langsw"><button data-l="hi">Hinglish</button><button data-l="en">English</button></div>
 <a class="ext" href="https://github.com/ramendrarajput/Indian-AI-Research-Lab" target="_blank" rel="noopener">GitHub ↗</a>
+<a class="ext hs" href="https://youtu.be/oelxxMxQTco" target="_blank" rel="noopener">YouTube ↗</a>
 </div></nav>
 <div id="app"></div>
+<noscript><div class="wrap" style="padding:40px 22px"><h1>BRAHMA</h1><p>Project BRAHMA — Indian AI Research Lab. Ek open-source Universal Intelligence Architecture. Is website ko dekhne ke liye JavaScript chalu karein. GitHub: <a href="https://github.com/ramendrarajput/Indian-AI-Research-Lab">Indian-AI-Research-Lab</a></p></div></noscript>
 <footer><div class="wrap" id="footline"></div></footer>
 
 <script>
 var GH="https://github.com/ramendrarajput/Indian-AI-Research-Lab";
+var YT="https://youtu.be/oelxxMxQTco", YT_ID="oelxxMxQTco";
+var LI="https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/";
+var IG="";  // TODO: Instagram link yahan daalo, e.g. "https://instagram.com/yourhandle"
+var TG="";  // TODO: Telegram channel link yahan daalo, e.g. "https://t.me/yourchannel"
+function soc(){function a(n,u){return u?'<a href="'+u+'" target="_blank" rel="noopener">'+n+' ↗</a>':'<span>'+n+' ('+t("jaldi aa raha hai","coming soon")+')</span>'}
+ return '<div class="soc">'+a("YouTube",YT)+a("GitHub",GH)+a("LinkedIn",LI)+a("Instagram",IG)+a("Telegram",TG)+'</div>'}
+function demoBlk(){return '<section class="blk" id="demo"><div class="wrap"><h2>▶ '+t("Live Demo","Live Demo")+'</h2><p class="lead">'+t("BRAHMA ko khud se sawaal puchte aur jawab dete dekhiye — apna architecture, apni pehchaan, sab usi ke shabdon mein.","Watch BRAHMA answer questions about its own architecture and identity.")+'</p><div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/'+YT_ID+'" title="Project BRAHMA demo" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><p style="margin-top:14px"><a class="btn p" href="'+YT+'" target="_blank" rel="noopener">'+t("YouTube par dekhein","Watch on YouTube")+'</a><a class="btn" href="'+GH+'" target="_blank" rel="noopener">'+t("Code dekhein","View the code")+'</a></p></div></section>'}
 var LANG=(localStorage.getItem("brahma_lang")||"hi");
 function t(hi,en){return LANG==="hi"?hi:en}
 
@@ -120,10 +144,11 @@ CONTENT.home=
 '<header class="hero"><div class="wrap inner">'+
 '<div><h1>BRAHMA<small>'+t("Bharat Research Architecture for Holistic Multidisciplinary Advancement","Bharat Research Architecture for Holistic Multidisciplinary Advancement")+'</small></h1>'+
 '<p>'+t('Ek chatbot nahi, ek Universal Intelligence Architecture — research, engineering aur alag-alag scientific fields ek hi cognitive runtime par. "How should intelligence itself be architected?" — yahi sawaal is repository ke har module, laboratory aur engineering decision ke peeche hai. Yahan intelligence koi product feature nahi, ek scientific discipline ki tarah engineer ki jaati hai.','Not a chatbot, but a Universal Intelligence Architecture — research, engineering, and distinct scientific fields running on a single cognitive runtime. "How should intelligence itself be architected?" — this is the question behind every module, laboratory, and engineering decision in this repository. Here, intelligence is not a product feature; it is engineered as a scientific discipline.')+'</p>'+
-'<button class="btn p" onclick="go(\'engineering\')">'+t("Architecture dekhein","Explore the architecture")+'</button><a class="btn" href="'+GH+'" target="_blank" rel="noopener">GitHub</a></div>'+
+'<button class="btn p" onclick="go(\'engineering\')">'+t("Architecture dekhein","Explore the architecture")+'</button><a class="btn" href="'+GH+'" target="_blank" rel="noopener">GitHub</a><button class="btn" onclick="document.getElementById(\'demo\').scrollIntoView({behavior:\'smooth\'})">▶ Demo</button></div>'+
 '<svg class="mandala" viewBox="0 0 400 400" role="img" aria-label="BRAHMA cognitive cycle" id="m"><circle class="ring" cx="200" cy="200" r="150"/><circle class="ring" cx="200" cy="200" r="100" stroke-dasharray="3 6"/><text x="200" y="208" text-anchor="middle" style="font:34px \'Tiro Devanagari Hindi\',serif;fill:var(--gold)">ॐ</text></svg>'+
 '</div></header><div class="wrap"><div class="stage" id="stage" aria-live="polite"></div>'+
 '<div class="g" style="margin-top:22px">'+stats.map(function(s){return '<div class="c stat"><h3>'+s[0]+'</h3><p>'+s[1]+'</p></div>'}).join("")+'</div></div>'+
+demoBlk()+
 blk(t("Kya hai Project BRAHMA","What is Project BRAHMA"),t("Ek naye tarah ka scientific-engineering initiative, jo India se ek software product ki tarah nahi, ek research architecture ki tarah shuru hua hai.","A new kind of scientific-engineering initiative, started from India not as a software product but as a research architecture."),
  '<p class="lead">'+t('BRAHMA ka maqsad ek aur AI chatbot ya AI product banana nahi hai. Ye ek <b style="color:var(--ink)">Universal Intelligence Runtime</b> banane ka prayas hai — ek aisa cognitive architecture jispar Artificial Intelligence, Quantum Computing, Physics, Biology, Mathematics, Robotics aur Finance jaisi alag-alag scientific disciplines ek hi shared runtime, memory aur reasoning engine par kaam kar sakein.','BRAHMA\'s purpose is not to build another AI chatbot or AI product. It is an effort to build a <b style="color:var(--ink)">Universal Intelligence Runtime</b> — a cognitive architecture on which distinct scientific disciplines like Artificial Intelligence, Quantum Computing, Physics, Biology, Mathematics, Robotics, and Finance can operate on one shared runtime, memory, and reasoning engine.')+'</p>'+
  '<p class="lead" style="margin-top:14px">'+t("Repository khud ek jeevit architecture ki tarah design hui hai — har idea Research se shuru hokar Engineering, Runtime, Laboratories, Applications, Public Systems aur Archive tak ek fixed lifecycle se guzarta hai. Kuch bhi jaldi mein nahi likha jaata; har architectural decision pehle document hota hai, phir implement.","The repository itself is designed as a living architecture — every idea passes through a fixed lifecycle, starting at Research and moving through Engineering, Runtime, Laboratories, Applications, Public Systems, and Archive. Nothing is written in haste; every architectural decision is documented before it is implemented.")+'</p>')+
@@ -224,7 +249,7 @@ var dd=[[t("01 Vision","01 Vision"),t("BRAHMA ka lakshya aur soch.","BRAHMA's lo
 [t("07 Changelog","07 Changelog"),t("Badlaav ka record (CHANGELOG.md).","A record of changes (CHANGELOG.md).")],
 ["history/",t("Purani documentation history.","Older documentation history.")]];
 CONTENT.docs=ph("docs/",t("Docs","Docs"),t("Documentation constitutional source of truth hai. Repository ki documentation khud ek scientific artifact hai.","Documentation is the constitutional source of truth. The repository's documentation is itself treated as a scientific artifact."))+
-blk(t("Documents","Documents"),t("Har architectural faisla implementation se pehle record kiya jaata hai — kuch bhi bhulaya nahi jaata. Exact filenames GitHub par confirm nahi ho paaye, isliye ye sab docs/ folder par le jaayenge.","Every architectural decision is recorded before implementation — nothing is forgotten. Exact filenames couldn't be confirmed on GitHub, so these all link to the docs/ folder."),
+blk(t("Documents","Documents"),t("Har architectural faisla implementation se pehle record kiya jaata hai — kuch bhi bhulaya nahi jaata. Ye sab documents docs/ folder mein milenge.","Every architectural decision is recorded before implementation — nothing is forgotten. All of these documents live in the docs/ folder."),
  grid(dd.map(function(d){return card(d[0],d[1],{href:GH+"/tree/main/docs"})})))+
 blk(t("Long-Term Roadmap","Long-Term Roadmap"),t("Project BRAHMA software releases ke around design nahi hua — ye architectural evolution ke around design hua hai. Har milestone architecture ko badhata hai, replace nahi karta.","Project BRAHMA was not designed around software releases — it was designed around architectural evolution. Every milestone extends the architecture, never replaces it."),
  flow([t("Universal Runtime","Universal Runtime"),t("Universal Agent","Universal Agent"),t("Scientific Laboratories","Scientific Laboratories"),t("Cross-Laboratory Intelligence","Cross-Laboratory Intelligence"),t("Artificial Scientists","Artificial Scientists"),t("Distributed Intelligence","Distributed Intelligence"),t("Universal Intelligence","Universal Intelligence"),t("Artificial Scientific Civilization","Artificial Scientific Civilization")]))+
@@ -258,7 +283,8 @@ CONTENT.founder=ph(t("Founder","Founder"),"Ramendra Singh Rajput",t("Government 
 '<div><h2>Ramendra Singh Rajput</h2><p style="color:var(--mute)">'+t("Government Patwari · MCA · Independent Researcher<br>Founder — Indian AI Research Lab<br>Creator — Project BRAHMA","Government Patwari · MCA · Independent Researcher<br>Founder — Indian AI Research Lab<br>Creator — Project BRAHMA")+'</p>'+
 '<p style="margin-top:16px;font-family:\'Tiro Devanagari Hindi\',serif;font-size:22px;color:var(--ink)">'+t("Patwari by profession.<br>Engineer by education.<br>Researcher by passion.","Patwari by profession.<br>Engineer by education.<br>Researcher by passion.")+'</p>'+
 '<div style="margin-top:20px" class="g">'+card(t("Mission","Mission"),t("Ek open scientific ecosystem sthapit karna jo har discipline mein intelligence ko aage badhaye — sirf Artificial Intelligence banana nahi, balki Intelligence ko khud samajhna.","To establish an open scientific ecosystem that advances intelligence across every discipline — not just building Artificial Intelligence, but understanding Intelligence itself."))+card(t("Motto","Motto"),"Research creates Knowledge. Engineering creates Intelligence. Intelligence creates Civilization.")+'</div></div>'+
-'</div></section>';
+'</div></section>'+
+blk(t("Judiye","Connect"),t("Updates, demos aur code — sab jagah.","Updates, demos and code — everywhere."),soc());
 
 return CONTENT;
 }
@@ -271,7 +297,7 @@ function renderNav(){
  nav.innerHTML=PAGES.map(function(p){return '<button data-p="'+p[0]+'">'+p[1][LANG]+"</button>"}).join("");
  nav.querySelectorAll("button").forEach(function(b){b.onclick=function(){go(b.getAttribute("data-p"))}});
  document.querySelectorAll("#langsw button").forEach(function(b){b.classList.toggle("on",b.getAttribute("data-l")===LANG)});
- document.getElementById("footline").innerHTML="Project BRAHMA v0.1 · MIT License · "+t("Built in India by","Built in India by")+" Ramendra Singh Rajput · <a href=\""+GH+"\" target=\"_blank\" rel=\"noopener\">GitHub</a>";
+ document.getElementById("footline").innerHTML="Project BRAHMA v0.1 · MIT License · "+t("Built in India by","Built in India by")+" Ramendra Singh Rajput"+soc();
  document.documentElement.lang=LANG;
 }
 function renderPages(){
