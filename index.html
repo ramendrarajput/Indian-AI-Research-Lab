@@ -84,6 +84,16 @@ footer{padding:34px 0;border-top:1px solid var(--line);color:var(--mute);font-si
 .soc{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:8px}
 .soc a,.soc span{font-size:15px}.soc span{color:var(--mute);opacity:.7}
 @media(max-width:720px){nav a.ext.hs{display:none}}
+.demo{display:grid;grid-template-columns:52px 1fr 52px;gap:14px;align-items:center}
+.demo .vid{grid-column:2;grid-row:1}
+.nav-btn{all:unset;box-sizing:border-box;cursor:pointer;width:52px;height:52px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);background:var(--card);display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,transform .15s}
+.nav-btn svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-btn:hover{background:var(--gold);color:#141a45}.nav-btn:active{transform:scale(.94)}
+.nav-btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.nav-btn.prev{grid-column:1;grid-row:1}.nav-btn.next{grid-column:3;grid-row:1}
+.dmeta{grid-column:1/-1;grid-row:2;text-align:center;color:var(--mute);font-size:15px;min-height:26px}
+.demo.solo{grid-template-columns:1fr}.demo.solo .vid{grid-column:1}.demo.solo .nav-btn,.demo.solo .dmeta{display:none}
+@media(max-width:720px){.demo{grid-template-columns:1fr 1fr;gap:12px}.demo .vid{grid-column:1/-1}.nav-btn.prev{grid-column:1;grid-row:2;justify-self:start}.nav-btn.next{grid-column:2;grid-row:2;justify-self:end}.dmeta{grid-row:3}}
 </style>
 </head>
 <body>
@@ -101,12 +111,20 @@ footer{padding:34px 0;border-top:1px solid var(--line);color:var(--mute);font-si
 <script>
 var GH="https://github.com/ramendrarajput/Indian-AI-Research-Lab";
 var YT="https://youtu.be/oelxxMxQTco", YT_ID="oelxxMxQTco";
+var PL="PLSFnTnH_djv4";  // YouTube "Project BRAHMA" playlist ID (URL ke list= ke baad wala hissa). Khali chhodo to sirf single video chalegi.
+var PL_URL=PL?"https://www.youtube.com/playlist?list="+PL:YT;
 var LI="https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/";
 var IG="";  // TODO: Instagram link yahan daalo, e.g. "https://instagram.com/yourhandle"
 var TG="";  // TODO: Telegram channel link yahan daalo, e.g. "https://t.me/yourchannel"
 function soc(){function a(n,u){return u?'<a href="'+u+'" target="_blank" rel="noopener">'+n+' ↗</a>':'<span>'+n+' ('+t("jaldi aa raha hai","coming soon")+')</span>'}
  return '<div class="soc">'+a("YouTube",YT)+a("GitHub",GH)+a("LinkedIn",LI)+a("Instagram",IG)+a("Telegram",TG)+'</div>'}
-function demoBlk(){return '<section class="blk" id="demo"><div class="wrap"><h2>▶ '+t("Live Demo","Live Demo")+'</h2><p class="lead">'+t("BRAHMA ko khud se sawaal puchte aur jawab dete dekhiye — apna architecture, apni pehchaan, sab usi ke shabdon mein.","Watch BRAHMA answer questions about its own architecture and identity.")+'</p><div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/'+YT_ID+'" title="Project BRAHMA demo" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div><p style="margin-top:14px"><a class="btn p" href="'+YT+'" target="_blank" rel="noopener">'+t("YouTube par dekhein","Watch on YouTube")+'</a><a class="btn" href="'+GH+'" target="_blank" rel="noopener">'+t("Code dekhein","View the code")+'</a></p></div></section>'}
+function demoBlk(){return '<section class="blk" id="demo"><div class="wrap"><h2>▶ '+t("Live Demo","Live Demo")+'</h2><p class="lead">'+t("BRAHMA ko khud se sawaal puchte aur jawab dete dekhiye — apna architecture, apni pehchaan, sab usi ke shabdon mein. Arrows se playlist ka agla ya pichhla video dekhein.","Watch BRAHMA answer questions about its own architecture and identity. Use the arrows to move through the playlist.")+'</p>'
++'<div class="demo" id="demo-box">'
++'<button class="nav-btn prev" id="dprev" type="button" aria-label="'+t("Pichhla video","Previous video")+'" title="'+t("Pichhla video","Previous video")+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>'
++'<div class="vid" id="dvid"><div id="ytp"></div></div>'
++'<button class="nav-btn next" id="dnext" type="button" aria-label="'+t("Agla video","Next video")+'" title="'+t("Agla video","Next video")+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>'
++'<div class="dmeta" id="dmeta" aria-live="polite"></div></div>'
++'<p style="margin-top:14px"><a class="btn p" href="'+PL_URL+'" target="_blank" rel="noopener">'+t("Poori playlist dekhein","Watch the full playlist")+'</a><a class="btn" href="'+GH+'" target="_blank" rel="noopener">'+t("Code dekhein","View the code")+'</a></p></div></section>'}
 var LANG=(localStorage.getItem("brahma_lang")||"hi");
 function t(hi,en){return LANG==="hi"?hi:en}
 
@@ -289,6 +307,55 @@ blk(t("Judiye","Connect"),t("Updates, demos aur code — sab jagah.","Updates, d
 return CONTENT;
 }
 
+// ---------- demo playlist player (YouTube IFrame API)
+var demoPlayer=null, ytQ=[];
+window.onYouTubeIframeAPIReady=function(){ytQ.splice(0).forEach(function(f){f()})};
+function withYT(ok,fail){
+ if(window.YT&&YT.Player){ok();return}
+ ytQ.push(ok);
+ if(!document.getElementById("ytapi")){var sc=document.createElement("script");sc.id="ytapi";sc.src="https://www.youtube.com/iframe_api";sc.onerror=fail;document.head.appendChild(sc)}
+}
+function demoMeta(){
+ var m=document.getElementById("dmeta");if(!m||!demoPlayer||!demoPlayer.getPlaylist)return;
+ try{var l=demoPlayer.getPlaylist()||[],i=demoPlayer.getPlaylistIndex(),d=demoPlayer.getVideoData()||{};
+  if(l.length)m.textContent=(i+1)+" / "+l.length+(d.title?" · "+d.title:"")}catch(e){}
+}
+function demoSolo(){
+ var b=document.getElementById("dvid"),w=document.getElementById("demo-box");if(!b||!w)return;
+ try{if(demoPlayer&&demoPlayer.destroy)demoPlayer.destroy()}catch(e){}
+ demoPlayer=null;
+ b.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+YT_ID+'" title="Project BRAHMA demo" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+ w.classList.add("solo");
+}
+function startDemoPlayer(){
+ if(!document.getElementById("ytp"))return;
+ var done=false,to=setTimeout(function(){if(!done)demoSolo()},10000);
+ withYT(function(){
+  if(!document.getElementById("ytp"))return;
+  var pv={listType:"playlist",list:PL,rel:0,modestbranding:1,playsinline:1};
+  if(/^https?:$/.test(location.protocol))pv.origin=location.origin;
+  demoPlayer=new YT.Player("ytp",{width:"100%",height:"100%",host:"https://www.youtube-nocookie.com",playerVars:pv,events:{
+   onReady:function(e){done=true;clearTimeout(to);try{e.target.setLoop(true)}catch(x){}demoMeta()},
+   onStateChange:function(){demoMeta()},
+   onError:function(){var n=0;try{n=(demoPlayer.getPlaylist()||[]).length}catch(x){}
+    if(!n){done=true;clearTimeout(to);demoSolo()}}
+  }});
+ },function(){clearTimeout(to);demoSolo()});
+}
+function initDemoPlayer(){
+ var box=document.getElementById("dvid");if(!box)return;
+ try{if(demoPlayer&&demoPlayer.destroy)demoPlayer.destroy()}catch(e){}
+ demoPlayer=null;
+ var go2=function(dir){return function(){if(!demoPlayer)return;try{dir>0?demoPlayer.nextVideo():demoPlayer.previousVideo()}catch(e){}setTimeout(demoMeta,700);setTimeout(demoMeta,2000)}};
+ document.getElementById("dprev").onclick=go2(-1);
+ document.getElementById("dnext").onclick=go2(1);
+ if(!PL){demoSolo();return}
+ if("IntersectionObserver" in window){
+  var io=new IntersectionObserver(function(en){if(en[0].isIntersecting){io.disconnect();startDemoPlayer()}},{rootMargin:"300px"});
+  io.observe(box);
+ }else startDemoPlayer();
+}
+
 // ---------- render + router
 var CONTENT={}, app=document.getElementById("app"), nav=document.getElementById("navlinks");
 var CURRENT="home";
@@ -306,6 +373,7 @@ function renderPages(){
  PAGES.forEach(function(p){var d=document.createElement("div");d.className="page";d.id="pg-"+p[0];d.innerHTML=CONTENT[p[0]];app.appendChild(d)});
  nav.querySelectorAll("button").forEach(function(b){b.onclick=function(){go(b.getAttribute("data-p"))}});
  initMandala();
+ initDemoPlayer();
 }
 function go(id){if(!CONTENT[id])id="home";CURRENT=id;
  document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("on",p.id=="pg-"+id)});
