@@ -142,14 +142,18 @@ var IG="";  // TODO: Instagram link yahan daalo, e.g. "https://instagram.com/you
 var TG="";  // TODO: Telegram channel link yahan daalo, e.g. "https://t.me/yourchannel"
 function soc(){function a(n,u){return u?'<a href="'+u+'" target="_blank" rel="noopener">'+n+' ↗</a>':'<span>'+n+' ('+t("jaldi aa raha hai","coming soon")+')</span>'}
  return '<div class="soc">'+a("YouTube",YT)+a("GitHub",GH)+a("LinkedIn",LI)+a("Instagram",IG)+a("Telegram",TG)+'</div>'}
-// ---------- DEMO VIDEOS (static list) ----------
-// Naya video jodna ho to bas ek line aur daalo: {id:"11-akshar-ki-video-ID", hi:"Hinglish title", en:"English title"}
-// Video ID = youtu.be/ ke baad ya watch?v= ke baad wala hissa.
+// ---------- DEMO VIDEOS ----------
+// Naya video jodna ho to bas uska YouTube link yahan paste karo (title apne aap aa jata hai):
+//   ,"https://youtu.be/XXXXXXXXXXX"
+// Chaho to title khud bhi de sakte ho: {id:"https://youtu.be/XXXXXXXXXXX", hi:"Hinglish title", en:"English title"}
+// Agar yahan 2 se kam video hain, to website par playlist (PL) se baaki videos apne aap dhoondh liye jaate hain.
 var VIDEOS=[
  {id:"oelxxMxQTco",hi:"BRAHMA Chat Demo — architecture aur pehchaan",en:"BRAHMA Chat Demo — architecture and identity"}
- // ,{id:"XXXXXXXXXXX",hi:"BRAHMA Runtime Console — roadmap",en:"BRAHMA Runtime Console — roadmap"}
- // ,{id:"YYYYYYYYYYY",hi:"BRAHMA Web Chat — online se local fallback",en:"BRAHMA Web Chat — online to local fallback"}
 ];
+function vidId(x){x=String(x||"");var m=x.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:(/^[A-Za-z0-9_-]{11}$/.test(x)?x:"")}
+function normVideos(){var seen={};VIDEOS=VIDEOS.map(function(v){return typeof v==="string"?{id:vidId(v)}:{id:vidId(v.id||v.url),hi:v.hi,en:v.en}}).filter(function(v){if(!v.id||seen[v.id])return false;seen[v.id]=1;return true})}
+normVideos();
+function vt(v,i){return t(v.hi,v.en)||v.hi||v.en||("Video "+(i+1))}
 function esc(x){return String(x).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
 function pad2(n){return n<10?"0"+n:""+n}
 function ytThumb(id,q){return "https://i.ytimg.com/vi/"+id+"/"+q+".jpg"}
@@ -161,7 +165,7 @@ return '<section class="blk" id="demo"><div class="wrap"><h2>▶ '+t("Live Demo"
 +'<div class="vid" id="dvid"></div>'
 +'<button class="nav-btn next" id="dnext" type="button"'+dis+' aria-label="'+t("Agla video","Next video")+'" title="'+t("Agla video","Next video")+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>'
 +'<div class="dmeta"><span id="dmeta" aria-live="polite"></span><a id="dwatch" href="'+ytWatch(VIDEOS[0].id)+'" target="_blank" rel="noopener">'+t("YouTube par dekhein ↗","Watch on YouTube ↗")+'</a></div></div>'
-+(many?'<div class="pl" id="dlist">'+VIDEOS.map(function(v,i){return '<button class="pl-item" type="button" data-i="'+i+'"><span class="pl-th"><img src="'+ytThumb(v.id,"hqdefault")+'" alt="" loading="lazy"><i>'+pad2(i+1)+'</i></span><span class="pl-t">'+esc(t(v.hi,v.en))+'</span></button>'}).join("")+'</div>':'')
++(many?'<div class="pl" id="dlist">'+VIDEOS.map(function(v,i){return '<button class="pl-item" type="button" data-i="'+i+'"><span class="pl-th"><img src="'+ytThumb(v.id,"hqdefault")+'" alt="" loading="lazy"><i>'+pad2(i+1)+'</i></span><span class="pl-t" data-t="1">'+esc(vt(v,i))+'</span></button>'}).join("")+'</div>':'')
 +'<p style="margin-top:18px"><a class="btn p" href="'+PL_URL+'" target="_blank" rel="noopener">'+t("Poori playlist dekhein","Watch the full playlist")+'</a><a class="btn" href="'+GH+'" target="_blank" rel="noopener">'+t("Code dekhein","View the code")+'</a></p></div></section>'}
 var LANG=(localStorage.getItem("brahma_lang")||"hi");
 function t(hi,en){return LANG==="hi"?hi:en}
@@ -345,11 +349,23 @@ blk(t("Judiye","Connect"),t("Updates, demos aur code — sab jagah.","Updates, d
 return CONTENT;
 }
 
-// ---------- demo video switcher (static, no YouTube API) ----------
+// ---------- demo video switcher (static UI; YouTube API sirf playlist dhoondhne ke liye) ----------
 var demoIdx=0, demoPlaying=false;
+function paintMeta(){
+ var v=VIDEOS[demoIdx];if(!v)return;
+ var title=vt(v,demoIdx),m=document.getElementById("dmeta"),w=document.getElementById("dwatch");
+ if(m)m.innerHTML=(VIDEOS.length>1?"<b>"+pad2(demoIdx+1)+" / "+pad2(VIDEOS.length)+"</b>":"")+esc(title);
+ if(w)w.href=ytWatch(v.id);
+ document.querySelectorAll("#dlist .pl-item").forEach(function(b,i){
+  var on=i===demoIdx,tt=b.querySelector("[data-t]");if(tt)tt.textContent=vt(VIDEOS[i],i);
+  b.classList.toggle("on",on);
+  if(on){b.setAttribute("aria-current","true");
+   if(b.parentNode.scrollWidth>b.parentNode.clientWidth)b.parentNode.scrollTo({left:b.offsetLeft-12,behavior:"smooth"})}
+  else b.removeAttribute("aria-current")});
+}
 function showDemo(play){
  var v=VIDEOS[demoIdx],box=document.getElementById("dvid");if(!v||!box)return;
- var title=t(v.hi,v.en),local=location.protocol==="file:";
+ var title=vt(v,demoIdx),local=location.protocol==="file:";
  if(play&&!local){
   box.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+v.id+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" title="'+esc(title)+'" allow="autoplay; accelerometer; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
   demoPlaying=true;
@@ -358,14 +374,7 @@ function showDemo(play){
   box.innerHTML='<button class="poster" type="button" aria-label="'+t("Video chalayein","Play video")+': '+esc(title)+'"><img src="'+ytThumb(v.id,"maxresdefault")+'" alt="" onerror="this.onerror=null;this.src=\''+ytThumb(v.id,"hqdefault")+'\'"><span class="pp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="pt">'+esc(title)+'</span></button>';
   box.firstChild.onclick=function(){if(local)window.open(ytWatch(v.id),"_blank","noopener");else showDemo(true)};
  }
- var m=document.getElementById("dmeta"),w=document.getElementById("dwatch");
- if(m)m.innerHTML=(VIDEOS.length>1?"<b>"+pad2(demoIdx+1)+" / "+pad2(VIDEOS.length)+"</b>":"")+esc(title);
- if(w)w.href=ytWatch(v.id);
- document.querySelectorAll("#dlist .pl-item").forEach(function(b,i){
-  var on=i===demoIdx;b.classList.toggle("on",on);
-  if(on){b.setAttribute("aria-current","true");
-   if(b.parentNode.scrollWidth>b.parentNode.clientWidth)b.parentNode.scrollTo({left:b.offsetLeft-12,behavior:"smooth"})}
-  else b.removeAttribute("aria-current")});
+ paintMeta();
 }
 function demoStep(d){var n=VIDEOS.length;if(n<2)return;demoIdx=(demoIdx+d+n)%n;showDemo(demoPlaying)}
 function initDemoPlayer(){
@@ -376,6 +385,45 @@ function initDemoPlayer(){
  box.onkeydown=function(e){if(e.target.tagName==="IFRAME")return;if(e.key==="ArrowLeft"){demoStep(-1)}else if(e.key==="ArrowRight"){demoStep(1)}};
  document.querySelectorAll("#dlist .pl-item").forEach(function(b){b.onclick=function(){demoIdx=+b.getAttribute("data-i");showDemo(true);document.getElementById("dvid").scrollIntoView({behavior:"smooth",block:"nearest"})}});
  showDemo(false);
+}
+// video ke titles YouTube se (jin videos ka title nahi diya gaya)
+function fetchTitles(){
+ VIDEOS.forEach(function(v){
+  if(v.hi||v.en||v.tf||!window.fetch)return;v.tf=1;
+  fetch("https://www.youtube.com/oembed?format=json&url="+encodeURIComponent(ytWatch(v.id)))
+   .then(function(r){return r.ok?r.json():Promise.reject()})
+   .then(function(j){if(j&&j.title){v.hi=v.en=j.title;if(!demoPlaying)showDemo(false);else paintMeta()}})
+   .catch(function(){});
+ });
+}
+function rebuildDemo(){
+ var sec=document.getElementById("demo");if(!sec)return;
+ var tmp=document.createElement("div");tmp.innerHTML=demoBlk();
+ sec.parentNode.replaceChild(tmp.firstChild,sec);
+ initDemoPlayer();fetchTitles();
+}
+// playlist (PL) se videos ki list apne aap nikaalna — sirf tab jab list mai 2 se kam video hon (https par)
+function discoverPlaylist(){
+ if(!PL||VIDEOS.length>1||location.protocol==="file:"||!/^https?:$/.test(location.protocol))return;
+ var host=document.createElement("div"),slot=document.createElement("div"),pl=null,iv=null,tm=null,done=false;
+ host.style.cssText="position:absolute;left:-9999px;top:0;width:200px;height:200px;overflow:hidden";host.setAttribute("aria-hidden","true");
+ host.appendChild(slot);document.body.appendChild(host);
+ function end(){done=true;clearInterval(iv);clearTimeout(tm);try{pl&&pl.destroy()}catch(e){}if(host.parentNode)host.parentNode.removeChild(host)}
+ function take(ids){
+  var seen={},out=ids.filter(function(id){if(seen[id]||!/^[A-Za-z0-9_-]{11}$/.test(id))return false;seen[id]=1;return true});
+  if(out.length<2)return false;
+  var known={};VIDEOS.forEach(function(v){known[v.id]=v});
+  VIDEOS=out.map(function(id){return known[id]||{id:id}});
+  end();rebuildDemo();return true;
+ }
+ function boot(){
+  pl=new YT.Player(slot,{width:200,height:200,host:"https://www.youtube-nocookie.com",playerVars:{listType:"playlist",list:PL,origin:location.origin,rel:0},events:{
+   onReady:function(){iv=setInterval(function(){if(done)return;try{var ids=pl.getPlaylist()||[];if(ids.length)take(ids)}catch(e){}},500)},
+   onError:function(){end()}}});
+  tm=setTimeout(end,15000);
+ }
+ if(window.YT&&YT.Player)boot();
+ else{window.onYouTubeIframeAPIReady=boot;var sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=end;document.head.appendChild(sc)}
 }
 
 // ---------- render + router
@@ -436,6 +484,8 @@ function initMandala(){
 renderNav();
 renderPages();
 go(location.hash.slice(1)||"home");
+fetchTitles();
+discoverPlaylist();
 </script>
 </body>
 </html>
