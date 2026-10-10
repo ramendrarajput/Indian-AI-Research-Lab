@@ -136,6 +136,7 @@ footer{padding:34px 0;border-top:1px solid var(--line);color:var(--mute);font-si
 var GH="https://github.com/ramendrarajput/Indian-AI-Research-Lab";
 var YT="https://youtu.be/oelxxMxQTco", YT_ID="oelxxMxQTco";
 var PL="PLSFnTnH_djv4";  // YouTube "Project BRAHMA" playlist ID (URL ke list= ke baad wala hissa). Khali chhodo to sirf single video chalegi.
+var YT_API_KEY="AIzaSyDbdfWOLJDISAdx4p6AqMZBAaiWDGA_lOg";  // Google Cloud mai banayi YouTube Data API key (website ke liye restricted). Khali ho to purana (kam pakka) tareeka chalta hai.
 var PL_URL=PL?"https://www.youtube.com/playlist?list="+PL:YT;
 var LI="https://www.linkedin.com/in/ramendra-singh-rajput-026a6a22/";
 var IG="";  // TODO: Instagram link yahan daalo, e.g. "https://instagram.com/yourhandle"
@@ -403,20 +404,40 @@ function rebuildDemo(){
  sec.parentNode.replaceChild(tmp.firstChild,sec);
  initDemoPlayer();fetchTitles();
 }
-// playlist (PL) se videos ki list apne aap nikaalna (https par); list mai pehle se likhe videos bhi bane rehte hain
-function discoverPlaylist(){
- if(!PL||location.protocol==="file:"||!/^https?:$/.test(location.protocol))return;
+// ---------- playlist se videos ki list apne aap laana ----------
+// Tareeka 1 (pakka): YouTube Data API key (YT_API_KEY) — playlist ki poori list, order aur titles seedha YouTube se.
+// Tareeka 2 (key na ho to koshish): chhupa hua YouTube player — ye har baar kaam karega ye pakka nahi.
+// Dono na chalein to upar VIDEOS mai likhe videos hi dikhte hain.
+function applyList(list){
+ var seen={},out=[];
+ list.forEach(function(x){if(x&&/^[A-Za-z0-9_-]{11}$/.test(x.id||"")&&!seen[x.id]){seen[x.id]=1;out.push(x)}});
+ if(out.length<1)return false;
+ var known={};VIDEOS.forEach(function(v){known[v.id]=v});
+ VIDEOS=out.map(function(x){var k=known[x.id];return (k&&(k.hi||k.en))?k:{id:x.id,hi:x.title,en:x.title}})
+  .concat(VIDEOS.filter(function(v){return !seen[v.id]}));
+ rebuildDemo();return true;
+}
+function discoverViaApi(done){
+ var all=[],base="https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,status&maxResults=50&playlistId="+encodeURIComponent(PL)+"&key="+encodeURIComponent(YT_API_KEY);
+ (function page(tok){
+  fetch(base+(tok?"&pageToken="+encodeURIComponent(tok):""))
+   .then(function(r){return r.ok?r.json():Promise.reject(r.status)})
+   .then(function(j){
+    (j.items||[]).forEach(function(it){
+     var sn=it.snippet||{},id=(sn.resourceId||{}).videoId,ps=(it.status||{}).privacyStatus;
+     if(id&&ps!=="private"&&sn.title!=="Private video"&&sn.title!=="Deleted video")all.push({id:id,title:sn.title});
+    });
+    if(j.nextPageToken&&all.length<200)page(j.nextPageToken);else done(applyList(all));
+   })
+   .catch(function(){done(false)});
+ })("");
+}
+function discoverViaPlayer(){
  var host=document.createElement("div"),slot=document.createElement("div"),pl=null,iv=null,tm=null,done=false;
  host.style.cssText="position:absolute;left:-9999px;top:0;width:200px;height:200px;overflow:hidden";host.setAttribute("aria-hidden","true");
  host.appendChild(slot);document.body.appendChild(host);
  function end(){done=true;clearInterval(iv);clearTimeout(tm);try{pl&&pl.destroy()}catch(e){}if(host.parentNode)host.parentNode.removeChild(host)}
- function take(ids){
-  var seen={},out=ids.filter(function(id){if(seen[id]||!/^[A-Za-z0-9_-]{11}$/.test(id))return false;seen[id]=1;return true});
-  if(out.length<2)return false;
-  var known={};VIDEOS.forEach(function(v){known[v.id]=v});
-  VIDEOS=out.map(function(id){return known[id]||{id:id}}).concat(VIDEOS.filter(function(v){return !seen[v.id]}));
-  end();rebuildDemo();return true;
- }
+ function take(ids){if(ids.length<2)return false;end();return applyList(ids.map(function(id){return {id:id}}))}
  function boot(){
   pl=new YT.Player(slot,{width:200,height:200,host:"https://www.youtube-nocookie.com",playerVars:{listType:"playlist",list:PL,origin:location.origin,rel:0},events:{
    onReady:function(){iv=setInterval(function(){if(done)return;try{var ids=pl.getPlaylist()||[];if(ids.length)take(ids)}catch(e){}},500)},
@@ -425,6 +446,11 @@ function discoverPlaylist(){
  }
  if(window.YT&&YT.Player)boot();
  else{window.onYouTubeIframeAPIReady=boot;var sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=end;document.head.appendChild(sc)}
+}
+function discoverPlaylist(){
+ if(!PL||!/^https?:$/.test(location.protocol))return;
+ if(YT_API_KEY&&window.fetch){discoverViaApi(function(ok){if(!ok)discoverViaPlayer()});return}
+ discoverViaPlayer();
 }
 
 // ---------- render + router
