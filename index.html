@@ -146,9 +146,10 @@ function soc(){function a(n,u){return u?'<a href="'+u+'" target="_blank" rel="no
 // Naya video jodna ho to bas uska YouTube link yahan paste karo (title apne aap aa jata hai):
 //   ,"https://youtu.be/XXXXXXXXXXX"
 // Chaho to title khud bhi de sakte ho: {id:"https://youtu.be/XXXXXXXXXXX", hi:"Hinglish title", en:"English title"}
-// Agar yahan 2 se kam video hain, to website par playlist (PL) se baaki videos apne aap dhoondh liye jaate hain.
+// Website (https) par playlist (PL) ke saare videos apne aap judte hain; yahan likhe videos bhi hamesha rehte hain.
 var VIDEOS=[
- {id:"oelxxMxQTco",hi:"BRAHMA Chat Demo — architecture aur pehchaan",en:"BRAHMA Chat Demo — architecture and identity"}
+ {id:"oelxxMxQTco",hi:"BRAHMA Chat Demo — architecture aur pehchaan",en:"BRAHMA Chat Demo — architecture and identity"},
+ "https://youtu.be/GY8Z01C-WmQ?si=cDxq2WRDJ4D-UlqN"
 ];
 function vidId(x){x=String(x||"");var m=x.match(/(?:youtu\.be\/|[?&]v=|\/embed\/|\/shorts\/)([A-Za-z0-9_-]{11})/);return m?m[1]:(/^[A-Za-z0-9_-]{11}$/.test(x)?x:"")}
 function normVideos(){var seen={};VIDEOS=VIDEOS.map(function(v){return typeof v==="string"?{id:vidId(v)}:{id:vidId(v.id||v.url),hi:v.hi,en:v.en}}).filter(function(v){if(!v.id||seen[v.id])return false;seen[v.id]=1;return true})}
@@ -402,9 +403,9 @@ function rebuildDemo(){
  sec.parentNode.replaceChild(tmp.firstChild,sec);
  initDemoPlayer();fetchTitles();
 }
-// playlist (PL) se videos ki list apne aap nikaalna — sirf tab jab list mai 2 se kam video hon (https par)
+// playlist (PL) se videos ki list apne aap nikaalna (https par); list mai pehle se likhe videos bhi bane rehte hain
 function discoverPlaylist(){
- if(!PL||VIDEOS.length>1||location.protocol==="file:"||!/^https?:$/.test(location.protocol))return;
+ if(!PL||location.protocol==="file:"||!/^https?:$/.test(location.protocol))return;
  var host=document.createElement("div"),slot=document.createElement("div"),pl=null,iv=null,tm=null,done=false;
  host.style.cssText="position:absolute;left:-9999px;top:0;width:200px;height:200px;overflow:hidden";host.setAttribute("aria-hidden","true");
  host.appendChild(slot);document.body.appendChild(host);
@@ -413,7 +414,7 @@ function discoverPlaylist(){
   var seen={},out=ids.filter(function(id){if(seen[id]||!/^[A-Za-z0-9_-]{11}$/.test(id))return false;seen[id]=1;return true});
   if(out.length<2)return false;
   var known={};VIDEOS.forEach(function(v){known[v.id]=v});
-  VIDEOS=out.map(function(id){return known[id]||{id:id}});
+  VIDEOS=out.map(function(id){return known[id]||{id:id}}).concat(VIDEOS.filter(function(v){return !seen[v.id]}));
   end();rebuildDemo();return true;
  }
  function boot(){
