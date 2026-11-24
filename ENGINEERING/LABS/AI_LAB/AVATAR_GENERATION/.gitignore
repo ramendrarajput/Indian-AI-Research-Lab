@@ -1,0 +1,27 @@
+# Model weights and checkpoints
+checkpoints/
+*.safetensors
+*.pth
+*.pth.tar
+*.ckpt
+
+# Private media and generated artifacts
+inputs/
+outputs/
+*.mp4
+*.mov
+*.wav
+*.mp3
+*.jpeg
+*.jpg
+*.png
+
+# Runtime state and logs
+logs/
+*.log
+.cache/
+__pycache__/
+*.py[cod]
+.env
+.venv/
+venv/
