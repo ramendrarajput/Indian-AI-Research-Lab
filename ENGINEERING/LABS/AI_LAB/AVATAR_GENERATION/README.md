@@ -6,18 +6,26 @@
 
 This module belongs to `ENGINEERING/LABS/AI_LAB` because it experiments with AI-based visual and speech-driven generation.
 
-It is an optional AI capability, not part of BRAHMA CORE or the BRAHMA Runtime. The SadTalker implementation is treated as a replaceable backend adapter so that other avatar-generation engines can be evaluated later without changing BRAHMA's core architecture.
+It is an optional AI capability, not part of BRAHMA CORE or the BRAHMA Runtime. SadTalker is treated as a replaceable backend so other avatar-generation engines can be evaluated later without changing BRAHMA's core architecture.
 
-## Initial objective
+## Current Colab workflow
 
-Establish a reproducible Google Colab workflow that:
+The first reproducible SadTalker notebook is available here:
 
-1. prepares a compatible Python/CUDA environment;
-2. obtains the SadTalker source code;
-3. restores model checkpoints from persistent storage;
-4. validates user-provided image and audio inputs;
-5. generates a talking-avatar video;
-6. stores outputs and execution logs in persistent storage.
+[`BRAHMA_SadTalker_Verified_Workflow.ipynb`](notebooks/BRAHMA_SadTalker_Verified_Workflow.ipynb)
+
+The notebook documents the successful setup path used in Colab:
+
+1. T4 GPU runtime verification.
+2. Miniconda3 with Python 3.8.20.
+3. PyTorch 2.0.1, torchvision 0.15.2, torchaudio 2.0.2 and CUDA 11.8.
+4. OpenTalker/SadTalker source and Python requirements.
+5. Four primary SadTalker model checkpoints.
+6. Image/audio input checks and MP3-to-16 kHz mono WAV conversion.
+7. 512-resolution inference using crop preprocessing.
+8. Local MP4 preview and direct download to the user's computer.
+
+**Validation note:** The inference command completed successfully in the working Colab session (`return code: 0`) and an MP4 was generated and played back. The notebook is an ordered reconstruction of those successful steps; a fresh-runtime end-to-end rerun is still recommended when validating future changes.
 
 ## Directory layout
 
@@ -39,14 +47,14 @@ Only source code, documentation, and non-sensitive configuration belong in Git. 
 
 ## Persistence strategy
 
-Colab's `/content` directory is temporary and can disappear when a runtime is reclaimed or reset. Therefore:
+Colab's `/content` directory is temporary and can disappear when a runtime is reclaimed or reset.
 
-- GitHub stores notebooks, scripts, documentation, and configuration.
-- Persistent storage (Google Drive or another user-controlled storage provider) stores model checkpoints and media.
-- A bootstrap workflow reconstructs the temporary Colab environment from versioned setup instructions.
-- Each stage must verify the existence and integrity (file size and preferably SHA-256) of restored assets before proceeding.
-
-A successful copy command alone is not considered a verified backup. The workflow must list the destination files and compare checksums where practical.
+- GitHub stores notebooks, scripts, documentation, and non-sensitive configuration.
+- Google Drive is used as the source for private input media and, when available, previously downloaded checkpoints.
+- Missing model checkpoints are downloaded into Colab's temporary local storage by the notebook.
+- Generated MP4 files are written to local Colab storage and downloaded directly to the user's computer. They are not uploaded to Drive by this workflow, avoiding failures when Drive storage quota is full.
+- Download the final MP4 before ending the Colab session.
+- Verify restored files before inference; add checksum verification as the workflow matures.
 
 ## Security and privacy
 
@@ -57,12 +65,12 @@ A successful copy command alone is not considered a verified backup. The workflo
 
 ## Implementation status
 
-**Phase 0 — Architecture and persistence design.** The module boundary and storage rules are documented. The reproducible Colab bootstrap, environment lock, validation scripts, and inference workflow are to be added and tested incrementally.
+**Phase 1 — Initial reproducible notebook committed.** The ordered Colab notebook captures the environment, checkpoint, input preparation, inference, preview, and local-download steps used in the successful SadTalker run.
 
 ## Next milestones
 
-1. Add a Colab bootstrap script with explicit Python, PyTorch, CUDA, and system-package checks.
-2. Add a persistent-storage restore/verify script for checkpoints and input assets.
-3. Add input validation and audio conversion helpers.
-4. Add an inference wrapper based on the actual SadTalker CLI options in the pinned source revision.
-5. Save the tested notebook and a run manifest (versions, commands, checksums, timestamps) to GitHub without personal media or model binaries.
+1. Re-run the notebook from a fresh Colab runtime to validate end-to-end reproducibility.
+2. Pin the SadTalker source revision and record dependency versions in a run manifest.
+3. Add SHA-256 checksums for model checkpoints and restored inputs.
+4. Extract reusable setup, validation, audio conversion, and inference helpers into `scripts/`.
+5. Evaluate optional face enhancement and alternative avatar-generation backends independently of BRAHMA Core.
